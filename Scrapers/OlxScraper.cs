@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using IronWebScraper;
 using Scrapers.Model;
@@ -16,9 +17,31 @@ namespace Scrapers
         /// <inheritdoc cref="IAnnouncementScraper.GetLastPage" />
         public override int GetLastPage(Response response)
         {
-            var paginator = response.Css(".pager").First();
-            var lastPage = paginator.Css(".block.fleft + .item.fleft > a > span").First();
-            return int.Parse(lastPage.InnerText);
+            HtmlNode lastPageNode;
+            int page;
+
+            try
+            {
+                var paginator = response.Css(".pager").First();
+                lastPageNode = paginator.Css(".block.fleft + .item.fleft > a > span").First();
+            }
+            catch (InvalidOperationException)
+            {
+                Log("Paginator node does not exist!", LogLevel.Critical);
+                return 1;
+            }
+
+            try
+            {
+                page = int.Parse(lastPageNode.InnerText);
+            }
+            catch (FormatException)
+            {
+                Log("Last page text should contain numbers!", LogLevel.Critical);
+                return 1;
+            }
+
+            return page;
         }
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
