@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using IronWebScraper;
+using Scrapers.Model;
 
 namespace Scrapers
 {
@@ -24,7 +25,7 @@ namespace Scrapers
         /// <summary>
         /// Unique offers
         /// </summary>
-        private readonly ISet<string> _offers = new HashSet<string>();
+        private readonly ISet<BaseEntryInfo> _offers = new HashSet<BaseEntryInfo>();
         
         protected BaseScraper(int startPage = 1, LogLevel logLevel = LogLevel.Critical)
         {
@@ -60,16 +61,13 @@ namespace Scrapers
         public abstract int GetLastPage(Response response);
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
-        public abstract ISet<string> GetOffers(Response response);
+        public abstract ISet<BaseEntryInfo> GetOffers(Response response);
 
         /// <inheritdoc cref="IAnnouncementScraper.GetPageUrl" />
         public abstract string GetPageUrl(int page);
 
         /// <inheritdoc cref="IAnnouncementScraper.ScrapeUrls" />
-        public void ScrapeUrls()
-        {
-            Scrape(_offers);
-        }
+        public void ScrapeUrls() => Scrape(_offers);
 
         #endregion
     }

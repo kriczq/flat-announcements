@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using IronWebScraper;
+using Scrapers.Model;
 
 namespace Scrapers
 {
@@ -18,7 +19,7 @@ namespace Scrapers
         /// </summary>
         /// <param name="response">HTTP Response</param>
         /// <returns>Set of links to offers</returns>
-        public ISet<string> GetOffers(Response response);
+        public ISet<BaseEntryInfo> GetOffers(Response response);
         
         /// <summary>
         /// Get url for specified page
