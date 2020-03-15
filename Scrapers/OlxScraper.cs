@@ -35,7 +35,7 @@ namespace Scrapers
                 });
             }
             
-            Log(LogLevel.Info, $"Found {offers.Count} announcements on page.");
+            Logger.Log(LogLevel.Info, $"Found {offers.Count} announcements on page.");
 
             return offers;
         }
@@ -49,12 +49,12 @@ namespace Scrapers
                 if (!nextLink.Attributes.Contains("href")) 
                     return null;
                 
-                Log(LogLevel.Decision, $"Found next link: {nextLink.Attributes["href"].Value}. Processing...");
+                Logger.Log(LogLevel.Decision, $"Found next link: {nextLink.Attributes["href"].Value}. Processing...");
                 return nextLink.Attributes.AttributesWithName("href").First().Value;
             }
             catch (InvalidOperationException)
             {
-                Log(LogLevel.Error, "Next link not found");
+                Logger.Log(LogLevel.Error, "Next link not found");
                 return null;
             }
         }

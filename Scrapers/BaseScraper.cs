@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using HtmlAgilityPack;
+using Scrapers.Logging;
 using Scrapers.Model;
 using ScrapySharp.Network;
 
@@ -9,6 +10,11 @@ namespace Scrapers
     public abstract class BaseScraper
     {
         private ScrapingBrowser _browser;
+
+        /// <summary>
+        /// Logger instance
+        /// </summary>
+        protected ILogger Logger;
         
         /// <summary>
         /// URL to start from
@@ -23,6 +29,7 @@ namespace Scrapers
         public BaseScraper()
         {
             _browser = new ScrapingBrowser();
+            Logger = new ConsoleLogger();
         }
 
         public void Start()
@@ -48,19 +55,6 @@ namespace Scrapers
                 Request(nextPage);
         }
 
-        public void Log(LogLevel level, string message)
-        {
-            Console.ForegroundColor = level switch
-            {
-                LogLevel.Decision => ConsoleColor.DarkGreen,
-                LogLevel.Error => ConsoleColor.Red,
-                LogLevel.Info => ConsoleColor.White,
-                _ => ConsoleColor.White
-            };
-
-            Console.WriteLine($"[{level}] {message}");
-        }
-        
         public abstract ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
         public abstract string GetNextPageUrl(HtmlNode html);
