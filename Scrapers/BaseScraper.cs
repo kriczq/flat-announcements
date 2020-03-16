@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using HtmlAgilityPack;
 using Scrapers.Logging;
 using Scrapers.Model;
@@ -69,11 +70,33 @@ namespace Scrapers
             Request(HomeUrl);
         }
 
+        /// <inheritdoc cref="IAnnouncementScraper.ScrapeOffers" />
+        public void ScrapeOffers()
+        {
+            foreach (var offer in _offers)
+            {
+                try
+                {
+                    var announcement = ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
+                    announcement.BaseInfo = offer;
+                    
+                    Writer.SaveOne(announcement);
+                }
+                catch (AggregateException e)
+                {
+                    Logger.Log(LogLevel.Error, $"Url {offer.Url} not scrappable. Skipping. ({e.Message})");
+                }
+            }
+        }
+
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
         public abstract ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
         /// <inheritdoc cref="IAnnouncementScraper.GetNextPageUrl" />
         public abstract string GetNextPageUrl(HtmlNode html);
+
+        /// <inheritdoc cref="IAnnouncementScraper.ParseOffer" />
+        public abstract Announcement ParseOffer(HtmlNode html);
 
         #endregion
     }

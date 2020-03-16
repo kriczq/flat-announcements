@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using HtmlAgilityPack;
 using Scrapers.Model;
 
@@ -25,5 +26,17 @@ namespace Scrapers
         /// <param name="html">Page HTML contents</param>
         /// <returns>Next page url or null</returns>
         public string GetNextPageUrl(HtmlNode html);
+        
+        /// <summary>
+        /// Parse html contents of an offer
+        /// </summary>
+        /// <param name="html">Page HTML contents</param>
+        /// <returns>Announcement</returns>
+        public Announcement ParseOffer(HtmlNode html);
+
+        /// <summary>
+        /// Scrape offers from links got earlier
+        /// </summary>
+        public void ScrapeOffers();
     }
 }
