@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HtmlAgilityPack;
 using Scrapers.Logging;
@@ -30,7 +30,11 @@ namespace Scrapers
         /// <summary>
         /// Scraping browser instance
         /// </summary>
-        private ScrapingBrowser _browser = new ScrapingBrowser();
+        private ScrapingBrowser _browser = new ScrapingBrowser
+        {
+            AutoDetectCharsetEncoding = false,
+            Encoding = Encoding.UTF8
+        };
 
         /// <summary>
         /// Unique offers
