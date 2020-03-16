@@ -24,7 +24,7 @@ namespace Scrapers
                 Encoding = Encoding.UTF8
             };
 
-            var offer = scraper.ParseOffer(browser.NavigateToPage(new Uri(url)).Html);
+            var offer = scraper.Parser.ParseOffer(browser.NavigateToPage(new Uri(url)).Html);
             scraper.Writer.SaveOne(offer);
         }
     }

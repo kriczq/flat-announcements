@@ -4,6 +4,7 @@ using System.Text;
 using HtmlAgilityPack;
 using Scrapers.Logging;
 using Scrapers.Model;
+using Scrapers.Parsing;
 using Scrapers.Writing;
 using ScrapySharp.Network;
 
@@ -17,6 +18,11 @@ namespace Scrapers
         /// Logger instance
         /// </summary>
         public ILogger Logger { get; set; } = new ConsoleLogger();
+        
+        /// <summary>
+        /// Parser instance
+        /// </summary>
+        public IAnnouncementParser Parser { get; set; }
 
         /// <summary>
         /// Data writer instance
@@ -77,7 +83,7 @@ namespace Scrapers
             {
                 try
                 {
-                    var announcement = ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
+                    var announcement = Parser.ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
                     announcement.BaseInfo = offer;
                     
                     Writer.SaveOne(announcement);
@@ -94,9 +100,6 @@ namespace Scrapers
 
         /// <inheritdoc cref="IAnnouncementScraper.GetNextPageUrl" />
         public abstract string GetNextPageUrl(HtmlNode html);
-
-        /// <inheritdoc cref="IAnnouncementScraper.ParseOffer" />
-        public abstract Announcement ParseOffer(HtmlNode html);
 
         #endregion
     }
