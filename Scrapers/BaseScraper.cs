@@ -10,17 +10,17 @@ namespace Scrapers
 {
     // TODO(magiczne): List with already visited urls and skipping them if so.
     // E.g. look at olx
-    public abstract class BaseScraper
+    public abstract class BaseScraper : IAnnouncementScraper
     {
         /// <summary>
         /// Logger instance
         /// </summary>
-        public ILogger Logger { get; set; }
+        public ILogger Logger { get; set; } = new ConsoleLogger();
 
         /// <summary>
         /// Data writer instance
         /// </summary>
-        public IDataWriter Writer { get; set; }
+        public IDataWriter Writer { get; set; } = new ConsoleWriter();
         
         /// <summary>
         /// URL to start from
@@ -30,35 +30,20 @@ namespace Scrapers
         /// <summary>
         /// Scraping browser instance
         /// </summary>
-        private ScrapingBrowser _browser;
+        private ScrapingBrowser _browser = new ScrapingBrowser();
 
         /// <summary>
         /// Unique offers
         /// </summary>
         private readonly ISet<BaseAnnouncementInfo> _offers = new HashSet<BaseAnnouncementInfo>();
 
-        protected BaseScraper()
-        {
-            _browser = new ScrapingBrowser();
-            Logger = new ConsoleLogger();
-            Writer = new ConsoleWriter();
-        }
-
-        public void Start()
-        {
-            if (HomeUrl == "")
-                throw new ArgumentException("HomeUrl must be provided");
-
-            Request(HomeUrl);
-        }
-
-        public void Request(string url)
+        private void Request(string url)
         {
             var page = _browser.NavigateToPage(new Uri(url));
             Parse(page.Html);
         }
 
-        public void Parse(HtmlNode html)
+        private void Parse(HtmlNode html)
         {
             _offers.UnionWith(GetOffers(html));
 
@@ -69,8 +54,23 @@ namespace Scrapers
                 Writer.SaveUrls(_offers);
         }
 
+        #region IAnnouncementScraper
+        
+        /// <inheritdoc cref="IAnnouncementScraper.Start" />
+        public void Start()
+        {
+            if (HomeUrl == "")
+                throw new ArgumentException("HomeUrl must be provided");
+
+            Request(HomeUrl);
+        }
+
+        /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
         public abstract ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
+        /// <inheritdoc cref="IAnnouncementScraper.GetNextPageUrl" />
         public abstract string GetNextPageUrl(HtmlNode html);
+
+        #endregion
     }
 }

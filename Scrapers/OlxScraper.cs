@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
@@ -47,9 +47,12 @@ namespace Scrapers
             {
                 var nextLink = webPage.CssSelect("[data-cy=page-link-next]").Last();
 
-                if (!nextLink.Attributes.Contains("href")) 
+                if (!nextLink.Attributes.Contains("href"))
+                {
+                    Logger.Log(LogLevel.Decision, "Next link not found. Scrapping complete...");
                     return null;
-                
+                }
+
                 Logger.Log(LogLevel.Decision, $"Found next link: {nextLink.Attributes["href"].Value}. Processing...");
                 return nextLink.Attributes.AttributesWithName("href").First().Value;
             }
