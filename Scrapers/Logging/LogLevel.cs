@@ -1,4 +1,4 @@
-﻿namespace Scrapers
+﻿namespace Scrapers.Logging
 {
     public enum LogLevel
     {

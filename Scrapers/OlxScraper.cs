@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
+using Scrapers.Logging;
 using Scrapers.Model;
 using ScrapySharp.Extensions;
 
