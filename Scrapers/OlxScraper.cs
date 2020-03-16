@@ -31,7 +31,7 @@ namespace Scrapers
                 offers.Add(new BaseAnnouncementInfo
                 {
                     IsAd = container.Attributes.AttributesWithName("class").First().Value.Contains("promoted"),
-                    Url = link.Attributes.AttributesWithName("href").First().Value,
+                    Url = SanitizeUrl(link.Attributes.AttributesWithName("href").First().Value),
                     Type = BreadcrumbToAnnouncementType(breadcrumb.InnerText)
                 });
             }
@@ -82,6 +82,22 @@ namespace Scrapers
                 return AnnouncementType.Swap;
 
             return AnnouncementType.Unknown;
+        }
+
+        /// <summary>
+        /// Remove hash and unnecessary parameters from url
+        /// </summary>
+        /// <param name="url">Url</param>
+        /// <returns>Cleaned url</returns>
+        private static string SanitizeUrl(string url)
+        {
+            if (url.Contains("#"))
+                url = url.Substring(0, url.IndexOf("#", StringComparison.Ordinal));
+
+            if (url.Contains("?"))
+                url = url.Substring(0, url.IndexOf("?", StringComparison.Ordinal));
+
+            return url;
         }
 
         #endregion
