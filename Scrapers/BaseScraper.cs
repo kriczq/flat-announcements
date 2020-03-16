@@ -1,73 +1,105 @@
 ﻿using System;
 using System.Collections.Generic;
-using IronWebScraper;
+using System.Text;
+using HtmlAgilityPack;
+using Scrapers.Logging;
 using Scrapers.Model;
+using Scrapers.Parsing;
+using Scrapers.Writing;
+using ScrapySharp.Network;
 
 namespace Scrapers
 {
-    public abstract class BaseScraper : WebScraper, IAnnouncementScraper
+    // TODO(magiczne): List with already visited urls and skipping them if so.
+    // E.g. look at olx
+    public abstract class BaseScraper : IAnnouncementScraper
     {
+        /// <summary>
+        /// Logger instance
+        /// </summary>
+        public ILogger Logger { get; set; } = new ConsoleLogger();
+        
+        /// <summary>
+        /// Parser instance
+        /// </summary>
+        public IAnnouncementParser Parser { get; set; }
+
+        /// <summary>
+        /// Data writer instance
+        /// </summary>
+        public IDataWriter Writer { get; set; } = new ConsoleWriter();
+        
         /// <summary>
         /// URL to start from
         /// </summary>
         protected string HomeUrl;
         
         /// <summary>
-        /// Currently processed page number
+        /// Scraping browser instance
         /// </summary>
-        protected int CurrentPage;
-        
-        /// <summary>
-        /// Last page number
-        /// </summary>
-        private int _lastPage = 1;
-        
+        private ScrapingBrowser _browser = new ScrapingBrowser
+        {
+            AutoDetectCharsetEncoding = false,
+            Encoding = Encoding.UTF8
+        };
+
         /// <summary>
         /// Unique offers
         /// </summary>
-        private readonly ISet<BaseEntryInfo> _offers = new HashSet<BaseEntryInfo>();
-        
-        protected BaseScraper(int startPage = 1, LogLevel logLevel = LogLevel.Critical)
+        private readonly ISet<BaseAnnouncementInfo> _offers = new HashSet<BaseAnnouncementInfo>();
+
+        private void Request(string url)
         {
-            CurrentPage = startPage;
-            LoggingLevel = logLevel;
-            ObeyRobotsDotTxt = false;
+            var page = _browser.NavigateToPage(new Uri(url));
+            Parse(page.Html);
         }
 
-        public override void Init()
+        private void Parse(HtmlNode html)
+        {
+            _offers.UnionWith(GetOffers(html));
+
+            var nextPage = GetNextPageUrl(html);
+            if (nextPage != null)
+                Request(nextPage);
+            else
+                Writer.SaveUrls(_offers);
+        }
+
+        #region IAnnouncementScraper
+        
+        /// <inheritdoc cref="IAnnouncementScraper.Start" />
+        public void Start()
         {
             if (HomeUrl == "")
                 throw new ArgumentException("HomeUrl must be provided");
-            
-            Request(GetPageUrl(CurrentPage), Parse);
+
+            Request(HomeUrl);
         }
-        
-        public override void Parse(Response response)
+
+        /// <inheritdoc cref="IAnnouncementScraper.ScrapeOffers" />
+        public void ScrapeOffers()
         {
-            if (CurrentPage == 1)
-                _lastPage = GetLastPage(response);
-
-            _offers.UnionWith(GetOffers(response));
-
-            if (++CurrentPage <= _lastPage)
-                Request(GetPageUrl(CurrentPage), Parse);
-            else
-                ScrapeUrls();
+            foreach (var offer in _offers)
+            {
+                try
+                {
+                    var announcement = Parser.ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
+                    announcement.BaseInfo = offer;
+                    
+                    Writer.SaveOne(announcement);
+                }
+                catch (AggregateException e)
+                {
+                    Logger.Log(LogLevel.Error, $"Url {offer.Url} not scrappable. Skipping. ({e.Message})");
+                }
+            }
         }
-        
-        #region IAnnouncementScraper
-
-        /// <inheritdoc cref="IAnnouncementScraper.GetLastPage" />
-        public abstract int GetLastPage(Response response);
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
-        public abstract ISet<BaseEntryInfo> GetOffers(Response response);
+        public abstract ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
-        /// <inheritdoc cref="IAnnouncementScraper.GetPageUrl" />
-        public abstract string GetPageUrl(int page);
-
-        /// <inheritdoc cref="IAnnouncementScraper.ScrapeUrls" />
-        public void ScrapeUrls() => Scrape(_offers);
+        /// <inheritdoc cref="IAnnouncementScraper.GetNextPageUrl" />
+        public abstract string GetNextPageUrl(HtmlNode html);
 
         #endregion
     }

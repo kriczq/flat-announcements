@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Flannounce.Configuration;
-using Flannounce.Domain.Model;
+using Flannounce.Model.DAO;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
 namespace Flannounce.Controllers
@@ -22,7 +23,7 @@ namespace Flannounce.Controllers
         public Flat Get(string id) =>
             _flats.Find<Flat>(student => student.FlatId == id).FirstOrDefault();
 
-        public Flat Create(Flat student) {
+        public Flat Create([FromBody] Flat student) {
             _flats.InsertOne(student);
             return student;
         }

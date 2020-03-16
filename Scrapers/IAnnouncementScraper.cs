@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using IronWebScraper;
+using HtmlAgilityPack;
 using Scrapers.Model;
 
 namespace Scrapers
@@ -7,30 +7,28 @@ namespace Scrapers
     public interface IAnnouncementScraper
     {
         /// <summary>
-        /// Get last page from response
+        /// Start scraping
         /// </summary>
-        /// <param name="response">HTTP Response</param>
-        /// <returns>Last page with offers</returns>
-        public int GetLastPage(Response response);
-
-        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
-        /// <summary>
-        /// Get list of offers urls on current page
-        /// </summary>
-        /// <param name="response">HTTP Response</param>
-        /// <returns>Set of links to offers</returns>
-        public ISet<BaseEntryInfo> GetOffers(Response response);
+        public void Start();
         
         /// <summary>
-        /// Get url for specified page
+        /// Get set of offers from html contents of a page.
         /// </summary>
-        /// <param name="page">Page number</param>
-        /// <returns>Specified page URL</returns>
-        public string GetPageUrl(int page);
+        /// <param name="html">Page HTML contents</param>
+        /// <returns>Set of offers</returns>
+        public ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
         /// <summary>
-        /// Scrape URLs to file
+        /// Get next page url from html contents of a page.
+        /// Return null when there is no next page.
         /// </summary>
-        public void ScrapeUrls();
+        /// <param name="html">Page HTML contents</param>
+        /// <returns>Next page url or null</returns>
+        public string GetNextPageUrl(HtmlNode html);
+
+        /// <summary>
+        /// Scrape offers from links got earlier
+        /// </summary>
+        public void ScrapeOffers();
     }
 }

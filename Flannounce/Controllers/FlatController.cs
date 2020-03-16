@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Flannounce.Domain.Model;
+using Flannounce.Model.DAO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flannounce.Controllers

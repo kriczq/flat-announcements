@@ -1,75 +1,81 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using IronWebScraper;
+using HtmlAgilityPack;
+using Scrapers.Extensions;
+using Scrapers.Logging;
 using Scrapers.Model;
+using Scrapers.Parsing;
+using ScrapySharp.Extensions;
 
 namespace Scrapers
 {
-    public sealed class OlxScraper : BaseScraper
+    public class OlxScraper : BaseScraper
     {
-        public OlxScraper(int startPage = 1, LogLevel logLevel = LogLevel.Critical)
-            : base(startPage, logLevel)
+        public OlxScraper()
         {
-            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/";
+            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/?page=498";
+            Parser = new OlxParser();
         }
-        
-        /// <inheritdoc cref="IAnnouncementScraper.GetLastPage" />
-        public override int GetLastPage(Response response)
-        {
-            HtmlNode lastPageNode;
-            int page;
 
-            try
-            {
-                var paginator = response.Css(".pager").First();
-                lastPageNode = paginator.Css(".block.fleft + .item.fleft > a > span").First();
-            }
-            catch (InvalidOperationException)
-            {
-                Log("Paginator node does not exist!", LogLevel.Critical);
-                return 1;
-            }
-
-            try
-            {
-                page = int.Parse(lastPageNode.InnerText);
-            }
-            catch (FormatException)
-            {
-                Log("Last page text should contain numbers!", LogLevel.Critical);
-                return 1;
-            }
-
-            return page;
-        }
+        #region IAnnouncementScraper
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
-        public override ISet<BaseEntryInfo> GetOffers(Response response)
+        public override ISet<BaseAnnouncementInfo> GetOffers(HtmlNode webPage)
         {
-            var offers = new HashSet<BaseEntryInfo>();
-            
-            foreach (var announcement in response.Css("#offers_table > tbody > tr.wrap"))
-            {
-                var container = announcement.Css("> td").First();
+            var offers = new HashSet<BaseAnnouncementInfo>();
 
-                var titleCell = announcement.Css(".title-cell").First();
-                var link = titleCell.Css("h3 > a").First();
-                var breadcrumb = titleCell.Css(".breadcrumb").First();
-                
-                offers.Add(new BaseEntryInfo
+            var table = webPage.CssSelect("#offers_table > tbody").First();
+
+            foreach (var announcement in table.CssSelect("tr.wrap"))
+            {
+                var container = announcement.CssSelect("td").First();
+                var titleCell = announcement.CssSelect(".title-cell").First();
+                var link = titleCell.CssSelect("h3 > a").First();
+                var breadcrumb = titleCell.CssSelect(".breadcrumb").First();
+                var href = link.Attributes.AttributesWithName("href").First().Value;
+
+                if (href.StartsWith("https://www.olx.pl"))
                 {
-                    IsAd = container.Attributes["class"].Contains("promoted"),
-                    Url = link.Attributes["href"],
-                    Type = BreadcrumbToAnnouncementType(breadcrumb.InnerText)
-                });
+                    offers.Add(new BaseAnnouncementInfo
+                    {
+                        IsAd = container.Attributes.AttributesWithName("class").First().Value.Contains("promoted"),
+                        Url = SanitizeUrl(href),
+                        Type = BreadcrumbToAnnouncementType(breadcrumb.InnerText)
+                    });
+                }
             }
+            
+            Logger.Log(LogLevel.Info, $"Found {offers.Count} announcements on page.");
 
             return offers;
         }
 
-        /// <inheritdoc cref="IAnnouncementScraper.GetPageUrl" />
-        public override string GetPageUrl(int page) => $"{HomeUrl}?page={page}";
+        /// <inheritdoc cref="IAnnouncementScraper.GetNextPageUrl" />
+        public override string GetNextPageUrl(HtmlNode webPage)
+        {
+            try
+            {
+                var nextLink = webPage.CssSelect("[data-cy=page-link-next]").Last();
+
+                if (!nextLink.Attributes.Contains("href"))
+                {
+                    Logger.Log(LogLevel.Decision, "Next link not found. Scrapping complete...");
+                    return null;
+                }
+
+                Logger.Log(LogLevel.Decision, $"Found next link: {nextLink.Attributes["href"].Value}. Processing...");
+                return nextLink.Attributes.AttributesWithName("href").First().Value;
+            }
+            catch (InvalidOperationException)
+            {
+                Logger.Log(LogLevel.Error, "Next link not found");
+                return null;
+            }
+        }
+
+        #endregion
 
         #region Utility methods
 
@@ -90,6 +96,22 @@ namespace Scrapers
                 return AnnouncementType.Swap;
 
             return AnnouncementType.Unknown;
+        }
+        
+        /// <summary>
+        /// Remove hash and unnecessary parameters from url
+        /// </summary>
+        /// <param name="url">Url</param>
+        /// <returns>Cleaned url</returns>
+        private static string SanitizeUrl(string url)
+        {
+            if (url.Contains("#"))
+                url = url.Substring(0, url.IndexOf("#", StringComparison.Ordinal));
+
+            if (url.Contains("?"))
+                url = url.Substring(0, url.IndexOf("?", StringComparison.Ordinal));
+
+            return url;
         }
 
         #endregion

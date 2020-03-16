@@ -1,13 +1,15 @@
-﻿using IronWebScraper;
-
-namespace Scrapers
+﻿namespace Scrapers
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
-            var scraper = new OlxScraper(490, WebScraper.LogLevel.All);
+            var scraper = new OlxScraper
+            {
+            // Writer = new FileWriter(Path.Combine("Scrapes", "Olx"))
+            };
             scraper.Start();
+            scraper.ScrapeOffers();
         }
     }
 }
