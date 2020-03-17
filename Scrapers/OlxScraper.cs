@@ -15,7 +15,7 @@ namespace Scrapers
     {
         public OlxScraper()
         {
-            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/?page=498";
+            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/";
             Parser = new OlxParser();
         }
 
