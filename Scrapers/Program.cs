@@ -23,7 +23,8 @@ namespace Scrapers
                     Writers =
                     {
                         new ConsoleWriter(),
-                        new FileWriter(Path.Combine("Scrapers", "Olx"))
+                        new FileWriter(Path.Combine("Scrapers", "Olx")),
+                        new MemoryWriter()
                     }
                 }
             };
