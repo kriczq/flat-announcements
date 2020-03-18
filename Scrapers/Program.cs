@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Scrapers.Logging;
 using Scrapers.Writing;
 
 namespace Scrapers
@@ -9,6 +10,14 @@ namespace Scrapers
         {
             var scraper = new OlxScraper
             {
+                Logger = new CompositeLogger
+                {
+                    Loggers =
+                    {
+                        new ConsoleLogger(),
+                        new FileLogger()
+                    }
+                },
                 Writer = new CompositeWriter
                 {
                     Writers =
