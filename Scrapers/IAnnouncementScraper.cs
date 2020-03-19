@@ -9,14 +9,14 @@ namespace Scrapers
         /// <summary>
         /// Start scraping
         /// </summary>
-        public void Start();
+        void Start();
         
         /// <summary>
         /// Get set of offers from html contents of a page.
         /// </summary>
         /// <param name="html">Page HTML contents</param>
         /// <returns>Set of offers</returns>
-        public ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
+        ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
         /// <summary>
         /// Get next page url from html contents of a page.
@@ -24,11 +24,11 @@ namespace Scrapers
         /// </summary>
         /// <param name="html">Page HTML contents</param>
         /// <returns>Next page url or null</returns>
-        public string GetNextPageUrl(HtmlNode html);
+        string GetNextPageUrl(HtmlNode html);
 
         /// <summary>
         /// Scrape offers from links got earlier
         /// </summary>
-        public void ScrapeOffers();
+        void ScrapeOffers();
     }
 }

@@ -10,6 +10,6 @@ namespace Scrapers.Parsing
         /// </summary>
         /// <param name="html">Page HTML contents</param>
         /// <returns>Announcement</returns>
-        public Announcement ParseOffer(HtmlNode html);
+        OlxAnnouncement ParseOffer(HtmlNode html);
     }
 }

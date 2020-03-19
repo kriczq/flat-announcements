@@ -13,7 +13,7 @@ namespace Scrapers.Parsing
     public class OlxParser : IAnnouncementParser
     {
         /// <inheritdoc cref="IAnnouncementParser.ParseOffer" />
-        public Announcement ParseOffer(HtmlNode html)
+        public OlxAnnouncement ParseOffer(HtmlNode html)
         {
             // Nodes
             var titleboxDetailsNode = html.CssSelect(".offer-titlebox__details > em").First();
@@ -61,7 +61,7 @@ namespace Scrapers.Parsing
 
             var createdAt = ParseCreatedAt(titleboxDetailsNode.InnerText);
             
-            return new Announcement
+            return new OlxAnnouncement
             {
                 Id = id,
                 Title = title,

@@ -29,19 +29,19 @@ namespace Scrapers.Writing
         }
 
         /// <inheritdoc cref="IDataWriter.SaveOne" />
-        public async void SaveOne(Announcement announcement)
+        public async void SaveOne(OlxAnnouncement olxAnnouncement)
         {
             var directory = $"{_dataPath}/Offers";
             
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
             
-            await using var stream = new FileStream($"{directory}/{announcement.Id}.json", FileMode.Create);
-            await JsonSerializer.SerializeAsync(stream, announcement);
+            await using var stream = new FileStream($"{directory}/{olxAnnouncement.Id}.json", FileMode.Create);
+            await JsonSerializer.SerializeAsync(stream, olxAnnouncement);
         }
 
         /// <inheritdoc cref="IDataWriter.SaveMany" />
-        public async void SaveMany(IEnumerable<Announcement> enumerable)
+        public async void SaveMany(IEnumerable<OlxAnnouncement> enumerable)
         {
             await using var stream = new FileStream($"{_dataPath}/Offers.json", FileMode.Create);
             await JsonSerializer.SerializeAsync(stream, enumerable);

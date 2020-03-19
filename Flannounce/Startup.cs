@@ -41,7 +41,8 @@ namespace Flannounce
             services.AddSingleton<IFlannounceDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<FlannounceDatabaseSettings>>().Value);
             
-            services.AddSingleton<IFlatService,FlatService>();
+            services.AddSingleton<IAnnounceService,AnnounceService>();
+            services.AddSingleton<IScrapService,ScrapService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

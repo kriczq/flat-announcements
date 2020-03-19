@@ -9,18 +9,18 @@ namespace Scrapers.Writing
         /// Save scraped base announcement info
         /// </summary>
         /// <param name="enumerable">Scraped base announcement info</param>
-        public void SaveUrls(IEnumerable<BaseAnnouncementInfo> enumerable);
+        void SaveUrls(IEnumerable<BaseAnnouncementInfo> enumerable);
         
         /// <summary>
         /// Save one announcement
         /// </summary>
-        /// <param name="announcement">Announcement</param>
-        public void SaveOne(Announcement announcement);
+        /// <param name="olxAnnouncement">Announcement</param>
+        void SaveOne(OlxAnnouncement olxAnnouncement);
 
         /// <summary>
         /// Save many announcements
         /// </summary>
         /// <param name="enumerable">Announcements</param>
-        public void SaveMany(IEnumerable<Announcement> enumerable);
+        void SaveMany(IEnumerable<OlxAnnouncement> enumerable);
     }
 }

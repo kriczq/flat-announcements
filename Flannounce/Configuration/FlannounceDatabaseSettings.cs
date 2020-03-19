@@ -2,7 +2,7 @@
 {
     public class FlannounceDatabaseSettings :IFlannounceDatabaseSettings
     {
-        public string FlatsCollectionName { get; set; }
+        public string AnnouncesCollectionName { get; set; }
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
     }

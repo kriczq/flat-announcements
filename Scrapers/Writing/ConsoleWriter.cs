@@ -17,15 +17,15 @@ namespace Scrapers.Writing
         }
 
         /// <inheritdoc cref="IDataWriter.SaveOne" />
-        public void SaveOne(Announcement announcement)
+        public void SaveOne(OlxAnnouncement olxAnnouncement)
         {
             Header("Scraped announcement");
             
-            Console.WriteLine(JsonSerializer.Serialize(announcement));
+            Console.WriteLine(JsonSerializer.Serialize(olxAnnouncement));
         }
 
         /// <inheritdoc cref="IDataWriter.SaveMany" />
-        public void SaveMany(IEnumerable<Announcement> enumerable)
+        public void SaveMany(IEnumerable<OlxAnnouncement> enumerable)
         {
             Header("Scraped announcements");
             

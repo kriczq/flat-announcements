@@ -47,6 +47,8 @@ namespace Scrapers
         /// Unique offers
         /// </summary>
         private readonly ISet<BaseAnnouncementInfo> _offers = new HashSet<BaseAnnouncementInfo>();
+        
+        private readonly ISet<OlxAnnouncement> _announcements = new HashSet<OlxAnnouncement>();
 
         private void Request(string url)
         {
@@ -85,6 +87,7 @@ namespace Scrapers
                 {
                     var announcement = Parser.ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
                     announcement.BaseInfo = offer;
+                    _announcements.Add(announcement);
                     
                     Writer.SaveOne(announcement);
                 }
@@ -93,6 +96,16 @@ namespace Scrapers
                     Logger.Log(LogLevel.Error, $"Url {offer.Url} not scrappable. Skipping. ({e.Message})");
                 }
             }
+        }
+
+        public ISet<OlxAnnouncement> GetAnnouncements()
+        {
+            return _announcements;
+        }
+        
+        public ISet<BaseAnnouncementInfo> GetOffers()
+        {
+            return _offers;
         }
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
