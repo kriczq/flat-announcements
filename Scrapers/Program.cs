@@ -1,4 +1,8 @@
-﻿namespace Scrapers
+﻿using System.IO;
+using Scrapers.Logging;
+using Scrapers.Writing;
+
+namespace Scrapers
 {
     internal static class Program
     {
@@ -6,7 +10,23 @@
         {
             var scraper = new OlxScraper
             {
-            // Writer = new FileWriter(Path.Combine("Scrapes", "Olx"))
+                Logger = new CompositeLogger
+                {
+                    Loggers =
+                    {
+                        new ConsoleLogger(),
+                        new FileLogger()
+                    }
+                },
+                Writer = new CompositeWriter
+                {
+                    Writers =
+                    {
+                        new ConsoleWriter(),
+                        new FileWriter(Path.Combine("Scrapers", "Olx")),
+                        new MemoryWriter()
+                    }
+                }
             };
             scraper.Start();
             scraper.ScrapeOffers();

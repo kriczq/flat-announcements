@@ -10,8 +10,6 @@ using ScrapySharp.Network;
 
 namespace Scrapers
 {
-    // TODO(magiczne): List with already visited urls and skipping them if so.
-    // E.g. look at olx
     public abstract class BaseScraper : IAnnouncementScraper
     {
         /// <summary>
@@ -37,11 +35,16 @@ namespace Scrapers
         /// <summary>
         /// Scraping browser instance
         /// </summary>
-        private ScrapingBrowser _browser = new ScrapingBrowser
+        private readonly ScrapingBrowser _browser = new ScrapingBrowser
         {
             AutoDetectCharsetEncoding = false,
             Encoding = Encoding.UTF8
         };
+
+        /// <summary>
+        /// Already visited URLs
+        /// </summary>
+        private readonly ISet<string> _alreadyVisited = new HashSet<string>();
 
         /// <summary>
         /// Unique offers
@@ -52,6 +55,8 @@ namespace Scrapers
 
         private void Request(string url)
         {
+            _alreadyVisited.Add(url);
+            
             var page = _browser.NavigateToPage(new Uri(url));
             Parse(page.Html);
         }
@@ -59,12 +64,25 @@ namespace Scrapers
         private void Parse(HtmlNode html)
         {
             _offers.UnionWith(GetOffers(html));
-
             var nextPage = GetNextPageUrl(html);
+
             if (nextPage != null)
-                Request(nextPage);
+            {
+                if (!_alreadyVisited.Contains(nextPage))
+                {
+                    Request(nextPage);   
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Decision, $"{nextPage} already visited. Saving results...");
+                    Writer.SaveUrls(_offers);
+                }
+            }
             else
+            {
+                Logger.Log(LogLevel.Decision, "Last page reached. Saving results...");
                 Writer.SaveUrls(_offers);
+            }
         }
 
         #region IAnnouncementScraper
