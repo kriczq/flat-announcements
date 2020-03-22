@@ -32,7 +32,7 @@ namespace Flannounce.Domain
                 Rooms = announcement.Rooms,
                 Floor = announcement.Floor,
                 CreatedAt = announcement.CreatedAt,
-                ScrapedAt = announcement.CreatedAt,
+                ScrapedAt = announcement.ScrapedAt,
             };
         }
     }
