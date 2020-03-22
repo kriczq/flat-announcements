@@ -3,7 +3,7 @@ using Scrapers.Model;
 
 namespace Scrapers.Writing
 {
-    public class MemoryWriter : IDataWriter
+    public class  MemoryWriter : IDataWriter
     {
         /// <summary>
         /// List of base announcement infos

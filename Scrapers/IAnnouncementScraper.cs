@@ -9,7 +9,7 @@ namespace Scrapers
         /// <summary>
         /// Start scraping
         /// </summary>
-        void Start();
+        void Start(AnnouncementType[] types);
         
         /// <summary>
         /// Get set of offers from html contents of a page.

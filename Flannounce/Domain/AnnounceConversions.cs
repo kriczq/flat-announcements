@@ -7,9 +7,9 @@ namespace Flannounce.Domain
 {
     public static class AnnounceConversions
     {
-        public static Announce ToAnnounce(this OlxAnnouncement olxAnnouncement)
+        public static Announce ToAnnounce(this Announcement announcement)
         {
-            if (olxAnnouncement is null)
+            if (announcement is null)
             {
                 return null;
             }
@@ -17,21 +17,22 @@ namespace Flannounce.Domain
 
             return new Announce()
             {
-                AnnounceId = olxAnnouncement.Id,
-                Title = olxAnnouncement.Title,
-                Url = olxAnnouncement.BaseInfo.Url,
-                City = olxAnnouncement.City,
-                District = olxAnnouncement.District,
-                Price = olxAnnouncement.BasePrice,
-                PricePerSquareMeter = (decimal) olxAnnouncement.PricePerSquareMeter,
-                IsFromDeveloper = olxAnnouncement.IsFromDeveloper,
-                IncludesFurniture = olxAnnouncement.IncludesFurniture,
-                LivingSpace = (decimal) olxAnnouncement.LivingSpace,
-                BuildingType = Parsers.Parse(olxAnnouncement.BuildingType),
-                Rooms = olxAnnouncement.Rooms,
-                Floor = olxAnnouncement.Floor,
-                CreatedAt = olxAnnouncement.CreatedAt,
-                ScrapedAt = olxAnnouncement.CreatedAt,
+                AnnounceId = announcement.Id,
+                AnnounceType = announcement.BaseInfo.Type.ToString(),
+                Title = announcement.Title,
+                Url = announcement.BaseInfo.Url,
+                City = announcement.City,
+                District = announcement.District,
+                Price = announcement.BasePrice,
+                PricePerSquareMeter = (decimal) announcement.PricePerSquareMeter,
+                OfferedBy = announcement.IsFromDeveloper ? OfferedBy.Private : OfferedBy.Agency,
+                IncludesFurniture = announcement.IncludesFurniture,
+                LivingSpace = (decimal) announcement.LivingSpace,
+                BuildingType = Parsers.Parse(announcement.BuildingType),
+                Rooms = announcement.Rooms,
+                Floor = announcement.Floor,
+                CreatedAt = announcement.CreatedAt,
+                ScrapedAt = announcement.CreatedAt,
             };
         }
     }

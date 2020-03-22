@@ -1,22 +1,43 @@
 using System.Collections.Generic;
 using System.Linq;
-using Flannounce.Domain;
+using Flannounce.Controllers;
 using Flannounce.Model.Content;
 using Flannounce.Model.DAO;
 using Scrapers;
+using Scrapers.Logging;
+using Scrapers.Model;
+using Scrapers.Writing;
 
-namespace Flannounce.Controllers
+namespace Flannounce.Domain.Services
 {
     public class ScrapService : IScrapService
     {
         public List<Announce> Scrap(ScrapParameters scrapParameters)
         {
-            var scraper = new OlxScraper();
-            scraper.Start();
+            var memory = new MemoryWriter();
+            
+            var scraper = new OlxScraper
+            {
+                Logger = new CompositeLogger
+                {
+                    Loggers =
+                    {
+                        new ConsoleLogger()
+                    }
+                },
+                Writer = new CompositeWriter
+                {
+                    Writers =
+                    {
+                        new ConsoleWriter(),
+                        memory
+                    }
+                }
+            };
+            scraper.Start(new[]{AnnouncementType.Sale});
             scraper.ScrapeOffers();
-            var announcments = scraper.GetAnnouncements();
 
-            return announcments.Select(a => a.ToAnnounce()).ToList();
+            return memory.Announcements.Select(a => a.ToAnnounce()).ToList();
         }
     }
 }

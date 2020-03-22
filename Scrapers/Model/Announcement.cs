@@ -2,7 +2,7 @@
 
 namespace Scrapers.Model
 {
-    public class OlxAnnouncement
+    public class Announcement
     {
         public BaseAnnouncementInfo BaseInfo { get; set; }
         public string Id { get; set; }

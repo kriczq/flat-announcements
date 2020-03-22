@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Flannounce.Model.Content;
 using Flannounce.Model.DAO;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Flannounce.Controllers
+namespace Flannounce.Domain.Services
 {
     public interface IScrapService
     {

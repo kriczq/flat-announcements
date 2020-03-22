@@ -14,13 +14,13 @@ namespace Scrapers.Writing
         /// <summary>
         /// Save one announcement
         /// </summary>
-        /// <param name="olxAnnouncement">Announcement</param>
-        void SaveOne(OlxAnnouncement olxAnnouncement);
+        /// <param name="announcement">Announcement</param>
+        void SaveOne(Announcement announcement);
 
         /// <summary>
         /// Save many announcements
         /// </summary>
         /// <param name="enumerable">Announcements</param>
-        void SaveMany(IEnumerable<OlxAnnouncement> enumerable);
+        void SaveMany(IEnumerable<Announcement> enumerable);
     }
 }

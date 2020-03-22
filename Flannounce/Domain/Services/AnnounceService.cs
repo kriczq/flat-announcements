@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using Flannounce.Configuration;
+using Flannounce.Controllers;
 using Flannounce.Model.DAO;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
-namespace Flannounce.Controllers
+namespace Flannounce.Domain.Services
 {
     public class AnnounceService : IAnnounceService
     {

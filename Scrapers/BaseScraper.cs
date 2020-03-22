@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using HtmlAgilityPack;
 using Scrapers.Logging;
@@ -31,6 +32,12 @@ namespace Scrapers
         /// URL to start from
         /// </summary>
         protected string HomeUrl;
+
+        /// <summary>
+        /// AnnouncementTypes to scrap
+        /// </summary>
+        protected AnnouncementType[] AnnouncementTypes = new[]
+            {AnnouncementType.Rent, AnnouncementType.Sale, AnnouncementType.Swap, AnnouncementType.Unknown};
         
         /// <summary>
         /// Scraping browser instance
@@ -51,7 +58,6 @@ namespace Scrapers
         /// </summary>
         private readonly ISet<BaseAnnouncementInfo> _offers = new HashSet<BaseAnnouncementInfo>();
         
-        private readonly ISet<OlxAnnouncement> _announcements = new HashSet<OlxAnnouncement>();
 
         private void Request(string url)
         {
@@ -88,11 +94,16 @@ namespace Scrapers
         #region IAnnouncementScraper
         
         /// <inheritdoc cref="IAnnouncementScraper.Start" />
-        public void Start()
+        public void Start(AnnouncementType[] types = null)
         {
             if (HomeUrl == "")
                 throw new ArgumentException("HomeUrl must be provided");
-
+            
+            if (types != null && types.Length > 0)
+            {
+                AnnouncementTypes = types;
+            }
+            
             Request(HomeUrl);
         }
 
@@ -105,22 +116,16 @@ namespace Scrapers
                 {
                     var announcement = Parser.ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
                     announcement.BaseInfo = offer;
-                    _announcements.Add(announcement);
                     
                     Writer.SaveOne(announcement);
                 }
-                catch (AggregateException e)
+                catch (Exception e) when (e is AggregateException || e is InvalidOperationException || e is FormatException)
                 {
                     Logger.Log(LogLevel.Error, $"Url {offer.Url} not scrappable. Skipping. ({e.Message})");
                 }
             }
         }
 
-        public ISet<OlxAnnouncement> GetAnnouncements()
-        {
-            return _announcements;
-        }
-        
         public ISet<BaseAnnouncementInfo> GetOffers()
         {
             return _offers;

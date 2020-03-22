@@ -38,12 +38,17 @@ namespace Scrapers
 
                 if (href.StartsWith("https://www.olx.pl"))
                 {
-                    offers.Add(new BaseAnnouncementInfo
+                    var baseOffer = new BaseAnnouncementInfo
                     {
                         IsAd = container.Attributes.AttributesWithName("class").First().Value.Contains("promoted"),
                         Url = SanitizeUrl(href),
                         Type = BreadcrumbToAnnouncementType(breadcrumb.InnerText)
-                    });
+                    };
+
+                    if (AnnouncementTypes.Contains(baseOffer.Type))
+                    {
+                        offers.Add(baseOffer);
+                    }
                 }
             }
             
