@@ -5,6 +5,9 @@ using Scrapers.Model;
 
 namespace Scrapers.Writing
 {
+    /// <summary>
+    /// Writer that outputs information to the standard output.
+    /// </summary>
     public class ConsoleWriter : IDataWriter
     {
         /// <inheritdoc cref="IDataWriter.SaveUrls" />
@@ -33,6 +36,13 @@ namespace Scrapers.Writing
                 Console.WriteLine(JsonSerializer.Serialize(announcement));
         }
 
+        /// <summary>
+        /// Write header to console in format:
+        /// # --------------
+        /// # message
+        /// # --------------
+        /// </summary>
+        /// <param name="message">Message to be written</param>
         private static void Header(string message)
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;

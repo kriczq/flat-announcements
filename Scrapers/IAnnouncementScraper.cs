@@ -9,13 +9,14 @@ namespace Scrapers
         /// <summary>
         /// Start scraping
         /// </summary>
-        void Start(AnnouncementType[] types);
+        void Start();
         
         /// <summary>
         /// Get set of offers from html contents of a page.
         /// </summary>
         /// <param name="html">Page HTML contents</param>
         /// <returns>Set of offers</returns>
+        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
         ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
         /// <summary>
