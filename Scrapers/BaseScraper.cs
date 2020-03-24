@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -123,11 +123,6 @@ namespace Scrapers
                     Logger.Log(LogLevel.Error, $"Url {offer.Url} not scrappable. Skipping. ({e.Message})");
                 }
             }
-        }
-
-        public ISet<BaseAnnouncementInfo> GetOffers()
-        {
-            return _offers;
         }
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
