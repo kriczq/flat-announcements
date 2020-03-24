@@ -3,6 +3,10 @@ using System.IO;
 
 namespace Scrapers.Logging
 {
+    /// <summary>
+    /// Logging class that outputs logged information to a file.
+    /// Filename changes daily for easier grouping of log messages.
+    /// </summary>
     public class FileLogger : ILogger
     {
         /// <summary>

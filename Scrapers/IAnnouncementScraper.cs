@@ -16,6 +16,7 @@ namespace Scrapers
         /// </summary>
         /// <param name="html">Page HTML contents</param>
         /// <returns>Set of offers</returns>
+        // ReSharper disable once ReturnTypeCanBeEnumerable.Global
         ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
 
         /// <summary>
