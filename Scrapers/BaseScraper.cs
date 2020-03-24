@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,18 +27,20 @@ namespace Scrapers
         /// Data writer instance
         /// </summary>
         public IDataWriter Writer { get; set; } = new ConsoleWriter();
+
+        /// <summary>
+        /// Announcement types to scrap
+        /// </summary>
+        public AnnouncementType[] TypesToScrap { get; set; } =
+        {
+            AnnouncementType.Rent, AnnouncementType.Sale, AnnouncementType.Swap, AnnouncementType.Unknown
+        };
         
         /// <summary>
         /// URL to start from
         /// </summary>
         protected string HomeUrl;
 
-        /// <summary>
-        /// AnnouncementTypes to scrap
-        /// </summary>
-        protected AnnouncementType[] AnnouncementTypes = new[]
-            {AnnouncementType.Rent, AnnouncementType.Sale, AnnouncementType.Swap, AnnouncementType.Unknown};
-        
         /// <summary>
         /// Scraping browser instance
         /// </summary>
@@ -69,9 +71,11 @@ namespace Scrapers
 
         private void Parse(HtmlNode html)
         {
-            _offers.UnionWith(GetOffers(html));
+            var offers = GetOffers(html)
+                .Where(offer => TypesToScrap.Contains(offer.Type));
+            _offers.UnionWith(offers);
+            
             var nextPage = GetNextPageUrl(html);
-
             if (nextPage != null)
             {
                 if (!_alreadyVisited.Contains(nextPage))
@@ -94,16 +98,11 @@ namespace Scrapers
         #region IAnnouncementScraper
         
         /// <inheritdoc cref="IAnnouncementScraper.Start" />
-        public void Start(AnnouncementType[] types = null)
+        public void Start()
         {
             if (HomeUrl == "")
                 throw new ArgumentException("HomeUrl must be provided");
-            
-            if (types != null && types.Length > 0)
-            {
-                AnnouncementTypes = types;
-            }
-            
+
             Request(HomeUrl);
         }
 

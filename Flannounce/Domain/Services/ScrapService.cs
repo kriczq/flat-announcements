@@ -18,6 +18,7 @@ namespace Flannounce.Domain.Services
             
             var scraper = new OlxScraper
             {
+                TypesToScrap = new [] { AnnouncementType.Sale },
                 Logger = new CompositeLogger
                 {
                     Loggers =
@@ -34,7 +35,7 @@ namespace Flannounce.Domain.Services
                     }
                 }
             };
-            scraper.Start(new[]{AnnouncementType.Sale});
+            scraper.Start();
             scraper.ScrapeOffers();
 
             return memory.Announcements.Select(a => a.ToAnnounce()).ToList();
