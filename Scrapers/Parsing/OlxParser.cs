@@ -10,6 +10,9 @@ using ScrapySharp.Extensions;
 
 namespace Scrapers.Parsing
 {
+    /// <summary>
+    /// Parser used to parse olx.pl announcements
+    /// </summary>
     public class OlxParser : IAnnouncementParser
     {
         /// <inheritdoc cref="IAnnouncementParser.ParseOffer" />

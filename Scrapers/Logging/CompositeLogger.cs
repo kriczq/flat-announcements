@@ -2,6 +2,9 @@
 
 namespace Scrapers.Logging
 {
+    /// <summary>
+    /// Logging class that should be used to compose multiple loggers into one.
+    /// </summary>
     public class CompositeLogger : ILogger
     {
         /// <summary>

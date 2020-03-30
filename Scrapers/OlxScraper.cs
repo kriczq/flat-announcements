@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
-using Scrapers.Extensions;
 using Scrapers.Logging;
 using Scrapers.Model;
 using Scrapers.Parsing;
@@ -45,10 +43,7 @@ namespace Scrapers
                         Type = BreadcrumbToAnnouncementType(breadcrumb.InnerText)
                     };
 
-                    if (AnnouncementTypes.Contains(baseOffer.Type))
-                    {
-                        offers.Add(baseOffer);
-                    }
+                    offers.Add(baseOffer);
                 }
             }
             

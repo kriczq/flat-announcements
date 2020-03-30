@@ -4,6 +4,9 @@ using Scrapers.Model;
 
 namespace Scrapers.Writing
 {
+    /// <summary>
+    /// Writer class that should be used to compose multiple writers into one
+    /// </summary>
     public class CompositeWriter : IDataWriter
     {
         /// <summary>
