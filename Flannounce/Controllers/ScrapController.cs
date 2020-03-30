@@ -50,10 +50,6 @@ namespace Flannounce.Controllers
                 {
                     yield return scrapedAnnounce;
                 }
-                else
-                {
-                    var lol = "wad";
-                }
             }
         }
     }
