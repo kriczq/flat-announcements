@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Flannounce.Domain.Parser;
 using Flannounce.Domain.Services;
+using Flannounce.Domain.Services.Implementation;
 using Flannounce.Model.Content;
 using Flannounce.Model.DAO;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +15,13 @@ namespace Flannounce.Controllers
     {
         private readonly IAnnounceService _announceService;
         private readonly IScrapService _scrapService;
+        private readonly IStreetParser _streetParser;
 
-        public ScrapController(IAnnounceService announceService, IScrapService scrapService)
+        public ScrapController(IAnnounceService announceService, IScrapService scrapService, IStreetParser streetParser)
         {
             _announceService = announceService;
             _scrapService = scrapService;
+            _streetParser = streetParser;
         }
 
         [HttpPost]
@@ -25,8 +29,7 @@ namespace Flannounce.Controllers
         {
             var scrapedAnnounces = _scrapService.Scrap(new ScrapParameters()); 
             var dbAnnounces = _announceService.Get();
-            var newAnnounces = GetOnlyNew(dbAnnounces,scrapedAnnounces).ToList();
-            
+            var newAnnounces =  _streetParser.ParseStreet(_scrapService.GetOnlyNewAnnounces(dbAnnounces, scrapedAnnounces)).ToList();
             
             foreach (var newAnnounce in newAnnounces)
             {
@@ -34,27 +37,6 @@ namespace Flannounce.Controllers
             }
 
             return newAnnounces;
-        }
-
-        private IEnumerable<Announce> GetOnlyNew(List<Announce> dbAnnounces, List<Announce> scrapedAnnounces)
-        {
-            var dic = new HashSet<Announce>(Announce.AnnounceComparer);
-            foreach (var dbAnnounce in dbAnnounces)
-            {
-                dic.Add(dbAnnounce);
-            }
-
-            foreach (var scrapedAnnounce in scrapedAnnounces)
-            {
-                if (dic.Add(scrapedAnnounce))
-                {
-                    yield return scrapedAnnounce;
-                }
-                else
-                {
-                    var lol = "wad";
-                }
-            }
         }
     }
 }

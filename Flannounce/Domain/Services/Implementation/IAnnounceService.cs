@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Flannounce.Model.DAO;
 
-namespace Flannounce.Domain.Services
+namespace Flannounce.Domain.Services.Implementation
 {
     public interface IAnnounceService
     {

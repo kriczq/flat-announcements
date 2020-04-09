@@ -267,3 +267,4 @@ appsettings.*.json
 
 #Keys
 #*.pem
+/Flannounce/Properties/PublishProfiles/
