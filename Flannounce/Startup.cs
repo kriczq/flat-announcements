@@ -1,5 +1,8 @@
 using Flannounce.Configuration;
+using Flannounce.Domain.DB;
+using Flannounce.Domain.Parser;
 using Flannounce.Domain.Services;
+using Flannounce.Domain.Services.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -33,9 +36,11 @@ namespace Flannounce
 
             services.AddSingleton<IFlannounceDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<FlannounceDatabaseSettings>>().Value);
-            
+            services.AddSingleton<IDbClient,DbClient>();
             services.AddSingleton<IAnnounceService,AnnounceService>();
             services.AddSingleton<IScrapService,ScrapService>();
+            services.AddSingleton<IStreetService,StreetService>();
+            services.AddTransient<IStreetParser, StreetParser>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

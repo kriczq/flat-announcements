@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Flannounce.Domain.Services;
+using Flannounce.Domain.Services.Implementation;
 using Flannounce.Model.DAO;
 using Microsoft.AspNetCore.Mvc;
 

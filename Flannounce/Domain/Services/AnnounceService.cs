@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Flannounce.Configuration;
 using Flannounce.Controllers;
+using Flannounce.Domain.DB;
+using Flannounce.Domain.Services.Implementation;
 using Flannounce.Model.DAO;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -11,15 +13,13 @@ namespace Flannounce.Domain.Services
     {
         private readonly IMongoCollection<Announce> _announces;
 
-        public AnnounceService(IFlannounceDatabaseSettings settings) {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-
-            _announces = database.GetCollection<Announce>(settings.AnnouncesCollectionName);
+        public AnnounceService(IDbClient client)
+        {
+            _announces = client.Announces;
         }
 
         public List<Announce> Get() =>
-            _announces.Find(flat => true).ToList();
+            _announces.Find(_ => true).ToList();
 
         public Announce Get(string id) =>
             _announces.Find<Announce>(a => a.Id == id).FirstOrDefault();

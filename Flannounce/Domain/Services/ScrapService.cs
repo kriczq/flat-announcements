@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Flannounce.Controllers;
+using Flannounce.Domain.Services.Implementation;
 using Flannounce.Model.Content;
 using Flannounce.Model.DAO;
 using Scrapers;
@@ -12,7 +13,7 @@ namespace Flannounce.Domain.Services
 {
     public class ScrapService : IScrapService
     {
-        public List<Announce> Scrap(ScrapParameters scrapParameters)
+        public IEnumerable<Announce> Scrap(ScrapParameters scrapParameters)
         {
             var memory = new MemoryWriter();
             
@@ -38,7 +39,24 @@ namespace Flannounce.Domain.Services
             scraper.Start();
             scraper.ScrapeOffers();
 
-            return memory.Announcements.Select(a => a.ToAnnounce()).ToList();
+            return memory.Announcements.Select(a => a.ToAnnounce());
+        }
+
+        public IEnumerable<Announce> GetOnlyNewAnnounces(List<Announce> dbAnnounces, IEnumerable<Announce> scrapedAnnounces)
+        {
+            var dic = new HashSet<Announce>(Announce.AnnounceComparer);
+            foreach (var dbAnnounce in dbAnnounces)
+            {
+                dic.Add(dbAnnounce);
+            }
+
+            foreach (var scrapedAnnounce in scrapedAnnounces)
+            {
+                if (dic.Add(scrapedAnnounce))
+                {
+                    yield return scrapedAnnounce;
+                }
+            }
         }
     }
 }
