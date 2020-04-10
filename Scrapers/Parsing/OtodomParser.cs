@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -31,9 +31,9 @@ namespace Scrapers.Parsing
             // Text
             var details = ParseDetails(detailsNodes);
 
-            var priceText = priceNode.InnerText.RemoveWhitespace().TrimFromEnd(2);
-            var rentText = details["Czynsz"].RemoveWhitespace().TrimFromEnd(2);
-            var pricePsmText = pricePsmNode.InnerText.RemoveWhitespace().TrimFromEnd(5);
+            var priceText = GetPriceText(priceNode);
+            var rentText = GetRentText(details);
+            var pricePsmText = GetPricePsmText(pricePsmNode);
 
             var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2);
 
@@ -47,12 +47,12 @@ namespace Scrapers.Parsing
             var rent = float.Parse(rentText);
             var pricePsm = float.Parse(pricePsmText);
 
-            var isFromDeveloper = details["Rynek"] != "Wtórny";
-            var includesFurniture = details["Stan wykończenia"] == "do zamieszkania";
+            var isFromDeveloper = details.ContainsKey("Rynek") &&  details["Rynek"] != "Wtórny";
+            var includesFurniture = details.ContainsKey("Stan wykończenia") && details["Stan wykończenia"] == "do zamieszkania";
             var livingSpace = float.Parse(livingSpaceText);
-            var buildingType = details["Rodzaj zabudowy"];
-            var rooms = details["Liczba pokoi"];
-            var floor = details["Piętro"];
+            var buildingType = details.ContainsKey("Rodzaj zabudowy") ? details["Rodzaj zabudowy"] : "";
+            var rooms = details.ContainsKey("Liczba pokoi") ? details["Liczba pokoi"] : "0";
+            var floor = details.ContainsKey("Piętro") ? details["Piętro"] : "Nieznane";
 
             var createdAt = ParseCreatedAt(html.InnerText);
             
@@ -129,6 +129,47 @@ namespace Scrapers.Parsing
             var match = Regex.Match(html, pattern);
             var date = match.Groups[1].Value;
             return Convert.ToDateTime(date, new CultureInfo("pl"));
+        }
+
+        /// <summary>
+        /// Returns rent text or empty string if data not present
+        /// </summary>
+        /// <param name="details">Details dictionary</param>
+        private static string GetRentText(IReadOnlyDictionary<string, string> details)
+        {
+            if (details.ContainsKey("Czynsz"))
+                return details["Czynsz"].RemoveWhitespace().TrimFromEnd(2);
+
+            if (details.ContainsKey("Czynsz - dodatkowo"))
+                return details["Czynsz - dodatkowo"].RemoveWhitespace().TrimFromEnd(2);
+
+            return "0";
+        }
+
+        /// <summary>
+        /// Parse price node and return price if present
+        /// </summary>
+        /// <param name="node">Price HTML node</param>
+        private static string GetPriceText(HtmlNode node)
+        {
+            if (node == null)
+                return "0";
+
+            if (node.InnerText.Contains("miesiąc"))
+                return node.InnerText.RemoveWhitespace().TrimFromEnd(10);
+
+            return node.InnerText.RemoveWhitespace().TrimFromEnd(2);
+        }
+
+        /// <summary>
+        /// Parse prise per square meter node and return price if present
+        /// </summary>
+        /// <param name="node">Price per square meter node</param>
+        private static string GetPricePsmText(HtmlNode node)
+        {
+            return node == null || node.InnerText == ""
+                ? "0" 
+                : node.InnerText.RemoveWhitespace().TrimFromEnd(5);
         }
     }
 }
