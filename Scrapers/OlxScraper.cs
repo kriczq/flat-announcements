@@ -13,8 +13,15 @@ namespace Scrapers
     {
         public OlxScraper()
         {
-            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/";
-            Parser = new OlxParser();
+            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/?page=497";
+            Parser = new CompositeParser
+            {
+                Parsers =
+                {
+                    { "https://www.olx.pl/", new OlxParser() },
+                    { "https://www.otodom.pl/", new OtodomParser() }
+                }
+            };
         }
 
         #region IAnnouncementScraper
