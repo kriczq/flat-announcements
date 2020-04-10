@@ -12,7 +12,8 @@ namespace Scrapers.Model
         public string Voivodeship { get; set; }
         public string City { get; set; }
         public string District { get; set; }
-        
+        public string Street { get; set; }
+
         public int BasePrice { get; set; }
         public float Rent { get; set; }
         public float PricePerSquareMeter { get; set; }
