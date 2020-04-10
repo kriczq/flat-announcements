@@ -8,8 +8,9 @@ namespace Scrapers.Parsing
         /// <summary>
         /// Parse html contents of an offer
         /// </summary>
+        /// <param name="url">Page url</param>
         /// <param name="html">Page HTML contents</param>
         /// <returns>Announcement</returns>
-        Announcement ParseOffer(HtmlNode html);
+        Announcement ParseOffer(string url, HtmlNode html);
     }
 }

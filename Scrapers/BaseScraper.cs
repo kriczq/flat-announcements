@@ -113,7 +113,8 @@ namespace Scrapers
             {
                 try
                 {
-                    var announcement = Parser.ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
+                    var uri = new Uri(offer.Url);
+                    var announcement = Parser.ParseOffer(offer.Url, _browser.NavigateToPage(uri).Html);
                     announcement.BaseInfo = offer;
                     
                     Writer.SaveOne(announcement);

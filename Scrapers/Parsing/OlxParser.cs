@@ -16,7 +16,7 @@ namespace Scrapers.Parsing
     public class OlxParser : IAnnouncementParser
     {
         /// <inheritdoc cref="IAnnouncementParser.ParseOffer" />
-        public Announcement ParseOffer(HtmlNode html)
+        public Announcement ParseOffer(string uri, HtmlNode html)
         {
             // Nodes
             var titleboxDetailsNode = html.CssSelect(".offer-titlebox__details > em").First();
