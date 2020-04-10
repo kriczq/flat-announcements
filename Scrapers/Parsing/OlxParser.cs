@@ -48,7 +48,7 @@ namespace Scrapers.Parsing
             var title = titleNode.InnerText.Trim();
             var (voivodeship, city, district) = ParseLocation(locationNode.InnerText.Trim());
 
-            var basePrice = int.Parse(priceText);
+            var basePrice = float.Parse(priceText);
             var rent = float.Parse(rentText);
             var pricePsm = float.Parse(pricePsmText);
 

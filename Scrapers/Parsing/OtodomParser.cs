@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace Scrapers.Parsing
             var id = idNode.InnerText.Split(": ")[1].Split("Nr")[0];
             var title = titleNode.InnerText.Trim();
 
-            var basePrice = int.Parse(priceText);
+            var basePrice = float.Parse(priceText);
             var rent = float.Parse(rentText);
             var pricePsm = float.Parse(pricePsmText);
 

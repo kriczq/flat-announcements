@@ -14,7 +14,7 @@ namespace Scrapers.Model
         public string District { get; set; }
         public string Street { get; set; }
 
-        public int BasePrice { get; set; }
+        public float BasePrice { get; set; }
         public float Rent { get; set; }
         public float PricePerSquareMeter { get; set; }
         
