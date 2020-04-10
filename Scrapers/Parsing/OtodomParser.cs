@@ -30,17 +30,12 @@ namespace Scrapers.Parsing
             
             // Text
             var details = ParseDetails(detailsNodes);
-            
-            var priceText = priceNode.InnerText.RemoveWhitespace();
-            priceText = priceText.Substring(0, priceText.Length - 2);
-            var pricePsmText = pricePsmNode.InnerText.RemoveWhitespace();
-            pricePsmText = pricePsmText.Substring(0, pricePsmText.Length - 5);
 
-            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace();
-            livingSpaceText = livingSpaceText.Substring(0, livingSpaceText.Length - 2);
+            var priceText = priceNode.InnerText.RemoveWhitespace().TrimFromEnd(2);
+            var rentText = details["Czynsz"].RemoveWhitespace().TrimFromEnd(2);
+            var pricePsmText = pricePsmNode.InnerText.RemoveWhitespace().TrimFromEnd(5);
 
-            var rentText = details["Czynsz"].RemoveWhitespace();
-            rentText = rentText.Substring(0, rentText.Length - 2);
+            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2);
 
             var (voivodeship, city, district, street) = ParseLocation(breadcrumbsNode);
 
