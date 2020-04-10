@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,7 +47,8 @@ namespace Scrapers
         private readonly ScrapingBrowser _browser = new ScrapingBrowser
         {
             AutoDetectCharsetEncoding = false,
-            Encoding = Encoding.UTF8
+            Encoding = Encoding.UTF8,
+            IgnoreCookies = true
         };
 
         /// <summary>
