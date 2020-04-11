@@ -16,7 +16,7 @@ namespace Scrapers.Parsing
     public class OlxParser : IAnnouncementParser
     {
         /// <inheritdoc cref="IAnnouncementParser.ParseOffer" />
-        public Announcement ParseOffer(HtmlNode html)
+        public Announcement ParseOffer(string uri, HtmlNode html)
         {
             // Nodes
             var titleboxDetailsNode = html.CssSelect(".offer-titlebox__details > em").First();
@@ -28,30 +28,27 @@ namespace Scrapers.Parsing
 
             // Text
             var details = ParseDetails(detailsNodes);
-            var priceText = priceNode.InnerText.RemoveWhitespace();
-            priceText = priceText.Substring(0, priceText.Length - 2);
-            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace();
-            livingSpaceText = livingSpaceText.Substring(0, livingSpaceText.Length - 2);
-            
+            var priceText = priceNode.InnerText.RemoveWhitespace().TrimFromEnd(2);
+            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2);
+
             var pricePsmText = details.ContainsKey("Cena za m²") 
                 ? details["Cena za m²"].RemoveWhitespace()
                 : "0";
             if (pricePsmText != "0")
-                pricePsmText = pricePsmText.Substring(0, pricePsmText.Length - 6)
-                    .Replace(".", ",");
+                pricePsmText = pricePsmText.TrimFromEnd(6).Replace(".", ",");
 
             var rentText = details.ContainsKey("Czynsz (dodatkowo)") 
                 ? details["Czynsz (dodatkowo)"].RemoveWhitespace()
                 : "0";
             if (rentText != "0")
-                rentText = rentText.Substring(0, rentText.Length - 2);
+                rentText = rentText.TrimFromEnd(2);
 
             // Values
             var id = idNode.InnerText.Trim().Split(":").Last();
             var title = titleNode.InnerText.Trim();
             var (voivodeship, city, district) = ParseLocation(locationNode.InnerText.Trim());
 
-            var basePrice = int.Parse(priceText);
+            var basePrice = float.Parse(priceText);
             var rent = float.Parse(rentText);
             var pricePsm = float.Parse(pricePsmText);
 

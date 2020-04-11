@@ -47,7 +47,8 @@ namespace Scrapers
         private readonly ScrapingBrowser _browser = new ScrapingBrowser
         {
             AutoDetectCharsetEncoding = false,
-            Encoding = Encoding.UTF8
+            Encoding = Encoding.UTF8,
+            IgnoreCookies = true
         };
 
         /// <summary>
@@ -113,7 +114,8 @@ namespace Scrapers
             {
                 try
                 {
-                    var announcement = Parser.ParseOffer(_browser.NavigateToPage(new Uri(offer.Url)).Html);
+                    var uri = new Uri(offer.Url);
+                    var announcement = Parser.ParseOffer(offer.Url, _browser.NavigateToPage(uri).Html);
                     announcement.BaseInfo = offer;
                     
                     Writer.SaveOne(announcement);

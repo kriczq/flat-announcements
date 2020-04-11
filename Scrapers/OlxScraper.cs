@@ -13,8 +13,15 @@ namespace Scrapers
     {
         public OlxScraper()
         {
-            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/";
-            Parser = new OlxParser();
+            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/?page=497";
+            Parser = new CompositeParser
+            {
+                Parsers =
+                {
+                    { "https://www.olx.pl/", new OlxParser() },
+                    { "https://www.otodom.pl/", new OtodomParser() }
+                }
+            };
         }
 
         #region IAnnouncementScraper
@@ -33,18 +40,13 @@ namespace Scrapers
                 var link = titleCell.CssSelect("h3 > a").First();
                 var breadcrumb = titleCell.CssSelect(".breadcrumb").First();
                 var href = link.Attributes.AttributesWithName("href").First().Value;
-
-                if (href.StartsWith("https://www.olx.pl"))
+                
+                offers.Add(new BaseAnnouncementInfo
                 {
-                    var baseOffer = new BaseAnnouncementInfo
-                    {
-                        IsAd = container.Attributes.AttributesWithName("class").First().Value.Contains("promoted"),
-                        Url = SanitizeUrl(href),
-                        Type = BreadcrumbToAnnouncementType(breadcrumb.InnerText)
-                    };
-
-                    offers.Add(baseOffer);
-                }
+                    IsAd = container.Attributes.AttributesWithName("class").First().Value.Contains("promoted"),
+                    Url = SanitizeUrl(href),
+                    Type = BreadcrumbToAnnouncementType(breadcrumb.InnerText)
+                });
             }
             
             Logger.Log(LogLevel.Info, $"Found {offers.Count} announcements on page.");
