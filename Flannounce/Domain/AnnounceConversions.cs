@@ -23,7 +23,7 @@ namespace Flannounce.Domain
                 Url = announcement.BaseInfo.Url,
                 City = announcement.City,
                 District = announcement.District,
-                Price = announcement.BasePrice,
+                Price = Convert.ToDecimal(announcement.BasePrice),
                 PricePerSquareMeter = (decimal) announcement.PricePerSquareMeter,
                 OfferedBy = announcement.IsFromDeveloper ? OfferedBy.Private : OfferedBy.Agency,
                 IncludesFurniture = announcement.IncludesFurniture,
