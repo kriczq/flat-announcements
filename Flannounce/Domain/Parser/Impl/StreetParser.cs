@@ -44,7 +44,7 @@ namespace Flannounce.Domain.Parser
 
         private void ParseStreetFromTitle(Announce announce)
         {
-            if (!_cityToStreets.Value.ContainsKey(announce.City)) return;
+            if ( !string.IsNullOrEmpty(announce.City) || !_cityToStreets.Value.ContainsKey(announce.City)) return;
             var streets = _cityToStreets.Value[announce.City];
             var title = announce.Title.ToLower().CleanCharacters();
             foreach (var street in streets.Where(street => title.Contains(street.CleanedName)))
