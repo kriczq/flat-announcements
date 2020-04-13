@@ -6,34 +6,13 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
-### Send POST request with json body
-POST http://localhost:5000/api/flat
-Content-Type: application/json
-
-{
-  "Title":"Sprzedam m4 do wprowadzenia po remoncie",
-  "Url":"https://www.olx.pl/oferta/sprzedam-m4-do-wprowadzenia-po-remoncie-CID3-IDCTurH.html#1787812ce8",
-  "City":"Żory",
-  "District":null,
-  "Description":"Witam .Sprzedam mieszkanie m4 położone na oś.pow.sl na 3 piętrze w 4pietrowym bloku całkowicie umeblowane, wraz z agd i zabudowami do wprowadzenia, zero nakładu, po remoncie. Mieszkanie jasne, czyste, zadbane. Cena 245tys do lekkiej nagocjacji dla zdecydowanego klienta.Zapraszam na prezentację. ( pośrednikom dziekuje)",
-  "RoomCount":3,
-  "Floor":3,
-  "BuildingType":"Blok",
-  "Market":"Secondary",
-  "OfferedBy":"Private",
-  "Price":235000,
-  "Area":56,
-  "AdditionDate":"2012-04-23T18:25:43.511Z",
-  "ScrapedDate":"2019-04-23T18:25:43.511Z",
-  "Image":null
-}
-
-###
 
 POST http://localhost:5000/api/scrap
 Content-Type: application/json
 
-{
+{   
+  "startPage": 1,
+  "stopAfter": 5
 }
 
 ###
