@@ -1,19 +1,21 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Flannounce.Controllers;
 using Flannounce.Domain.Services.Implementation;
-using Flannounce.Model.Content;
 using Flannounce.Model.DAO;
+using Flannounce.Model.DTO;
 using Scrapers;
 using Scrapers.Logging;
 using Scrapers.Model;
 using Scrapers.Writing;
+using Flannounce.Model.DTO.Utils;
 
 namespace Flannounce.Domain.Services
 {
     public class ScrapService : IScrapService
     {
-        public IEnumerable<Announce> Scrap(ScrapParameters scrapParameters)
+        public IEnumerable<Announce> Scrap(ScrapParametersDto scrapParametersDto)
         {
             var memory = new MemoryWriter();
             
@@ -36,7 +38,9 @@ namespace Flannounce.Domain.Services
                     }
                 }
             };
-            scraper.Start();
+
+            var (startPage, stopPage) = scrapParametersDto.ConvertParameters();
+            scraper.Start(startPage,stopPage);
             scraper.ScrapeOffers();
 
             return memory.Announcements.Select(a => a.ToAnnounce());

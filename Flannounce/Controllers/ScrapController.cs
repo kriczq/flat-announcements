@@ -3,8 +3,8 @@ using System.Linq;
 using Flannounce.Domain.Parser;
 using Flannounce.Domain.Services;
 using Flannounce.Domain.Services.Implementation;
-using Flannounce.Model.Content;
 using Flannounce.Model.DAO;
+using Flannounce.Model.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flannounce.Controllers
@@ -25,9 +25,9 @@ namespace Flannounce.Controllers
         }
 
         [HttpPost]
-        public ActionResult<List<Announce>> Scrap(ScrapParameters scrapParameters)
+        public ActionResult<List<Announce>> Scrap(ScrapParametersDto scrapParametersDto)
         {
-            var scrapedAnnounces = _scrapService.Scrap(new ScrapParameters()); 
+            var scrapedAnnounces = _scrapService.Scrap(scrapParametersDto); 
             var dbAnnounces = _announceService.Get();
             var newAnnounces =  _streetParser.ParseStreet(_scrapService.GetOnlyNewAnnounces(dbAnnounces, scrapedAnnounces)).ToList();
             
