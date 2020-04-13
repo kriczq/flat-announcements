@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +42,16 @@ namespace Scrapers
         protected string HomeUrl;
 
         /// <summary>
+        /// After how many pages scraper will stop processing data
+        /// </summary>
+        private int _stopAfter;
+
+        /// <summary>
+        /// How many pages were processed already
+        /// </summary>
+        private int _alreadyParsedCount;
+
+        /// <summary>
         /// Scraping browser instance
         /// </summary>
         private readonly ScrapingBrowser _browser = new ScrapingBrowser
@@ -79,39 +89,50 @@ namespace Scrapers
         /// <param name="html">HTML nodes</param>
         private void Parse(HtmlNode html)
         {
-            var offers = GetOffers(html)
-                .Where(offer => TypesToScrap.Contains(offer.Type));
-            _offers.UnionWith(offers);
-            
-            var nextPage = GetNextPageUrl(html);
-            if (nextPage != null)
+            var offers = GetOffers(html);
+            var validOffers = offers.Where(offer => TypesToScrap.Contains(offer.Type));
+            _offers.UnionWith(validOffers);
+            _alreadyParsedCount++;
+
+            if (_stopAfter != 0 && _alreadyParsedCount >= _stopAfter)
             {
-                if (!_alreadyVisited.Contains(nextPage))
-                {
-                    Request(nextPage);   
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Decision, $"{nextPage} already visited. Saving results...");
-                    Writer.SaveUrls(_offers);
-                }
+                Logger.Log(LogLevel.Decision, $"Scraping limit of {_stopAfter} pages reached. Saving results...");
+                Writer.SaveUrls(_offers);
+                return;
             }
-            else
+
+            var nextPage = GetNextPageUrl(html);
+            if (nextPage == null)
             {
                 Logger.Log(LogLevel.Decision, "Last page reached. Saving results...");
                 Writer.SaveUrls(_offers);
+                return;
             }
+
+            if (_alreadyVisited.Contains(nextPage))
+            {
+                Logger.Log(LogLevel.Decision, $"{nextPage} already visited. Saving results...");
+                Writer.SaveUrls(_offers);
+                return;
+            }
+
+            Request(nextPage);
         }
 
         #region IAnnouncementScraper
         
         /// <inheritdoc cref="IAnnouncementScraper.Start" />
-        public void Start()
+        public void Start(int startPage = 1, int stopAfter = 0)
         {
             if (HomeUrl == "")
                 throw new ArgumentException("HomeUrl must be provided");
 
-            Request(HomeUrl);
+            _alreadyParsedCount = 0;
+            _stopAfter = stopAfter;
+            
+            Logger.Log(LogLevel.Decision, $"Started scraping from page {startPage} with limit of {stopAfter} pages...");
+            
+            Request(GetPageUrl(startPage));
         }
 
         /// <inheritdoc cref="IAnnouncementScraper.ScrapeOffers" />
@@ -133,6 +154,9 @@ namespace Scrapers
                 }
             }
         }
+
+        /// <inheritdoc cref="IAnnouncementScraper.GetPageUrl" />
+        public abstract string GetPageUrl(int page);
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
         public abstract ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);

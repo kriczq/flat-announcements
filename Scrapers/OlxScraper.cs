@@ -77,6 +77,9 @@ namespace Scrapers
             }
         }
 
+        /// <inheritdoc cref="IAnnouncementScraper.GetPageUrl" />
+        public override string GetPageUrl(int page) => $"{HomeUrl}?page={page}";
+
         #endregion
 
         #region Utility methods

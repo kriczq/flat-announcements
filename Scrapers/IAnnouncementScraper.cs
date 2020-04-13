@@ -7,9 +7,14 @@ namespace Scrapers
     public interface IAnnouncementScraper
     {
         /// <summary>
-        /// Start scraping
+        /// Start scraping process
+        /// <param name="startPage">Page from which scraping will start</param>
+        /// <param name="stopAfter">
+        /// After how many pages scrapping should end. If provided number is 0 process will not stop until last
+        /// page. If provided number bigger than actual number of pages process will stop on the last page.
+        /// </param>
         /// </summary>
-        void Start();
+        void Start(int startPage = 1, int stopAfter = 0);
         
         /// <summary>
         /// Get set of offers from html contents of a page.
@@ -28,7 +33,13 @@ namespace Scrapers
         string GetNextPageUrl(HtmlNode html);
 
         /// <summary>
-        /// Scrape offers from links got earlier
+        /// Get url for specified page
+        /// </summary>
+        /// <returns>Page url</returns>
+        string GetPageUrl(int page);
+
+        /// <summary>
+        /// Scrape offers from links acquired earlier with <see cref="IAnnouncementScraper.Start" /> method.
         /// </summary>
         void ScrapeOffers();
     }

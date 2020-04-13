@@ -28,7 +28,7 @@ namespace Scrapers
                     }
                 }
             };
-            scraper.Start();
+            scraper.Start(380, 5);
             scraper.ScrapeOffers();
         }
     }
