@@ -13,7 +13,7 @@ namespace Scrapers
     {
         public OlxScraper()
         {
-            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/?page=497";
+            HomeUrl = "https://www.olx.pl/nieruchomosci/mieszkania/";
             Parser = new CompositeParser
             {
                 Parsers =
