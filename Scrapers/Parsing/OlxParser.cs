@@ -35,7 +35,7 @@ namespace Scrapers.Parsing
                 ? details["Cena za m²"].RemoveWhitespace()
                 : "0";
             if (pricePsmText != "0")
-                pricePsmText = pricePsmText.TrimFromEnd(6).Replace(".", ",");
+                pricePsmText = pricePsmText.TrimFromEnd(5).Replace(".", ",");
 
             var rentText = details.ContainsKey("Czynsz (dodatkowo)") 
                 ? details["Czynsz (dodatkowo)"].RemoveWhitespace()
