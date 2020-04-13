@@ -61,7 +61,10 @@ namespace Scrapers
         /// </summary>
         private readonly ISet<BaseAnnouncementInfo> _offers = new HashSet<BaseAnnouncementInfo>();
         
-
+        /// <summary>
+        /// Perform request to the specified url
+        /// </summary>
+        /// <param name="url">Page URL</param>
         private void Request(string url)
         {
             _alreadyVisited.Add(url);
@@ -69,7 +72,11 @@ namespace Scrapers
             var page = _browser.NavigateToPage(new Uri(url));
             Parse(page.Html);
         }
-
+        
+        /// <summary>
+        /// Parse HTML acquired from requested page
+        /// </summary>
+        /// <param name="html">HTML nodes</param>
         private void Parse(HtmlNode html)
         {
             var offers = GetOffers(html)
