@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,11 +17,6 @@ namespace Scrapers
         /// Logger instance
         /// </summary>
         public ILogger Logger { get; set; } = new ConsoleLogger();
-        
-        /// <summary>
-        /// Parser instance
-        /// </summary>
-        public IAnnouncementParser Parser { get; set; }
 
         /// <summary>
         /// Data writer instance
@@ -35,6 +30,11 @@ namespace Scrapers
         {
             AnnouncementType.Rent, AnnouncementType.Sale, AnnouncementType.Swap, AnnouncementType.Unknown
         };
+
+        /// <summary>
+        /// Parser instance
+        /// </summary>
+        protected IAnnouncementParser Parser;
         
         /// <summary>
         /// URL to start from
