@@ -17,11 +17,6 @@ namespace Scrapers
         /// Logger instance
         /// </summary>
         public ILogger Logger { get; set; } = new ConsoleLogger();
-        
-        /// <summary>
-        /// Parser instance
-        /// </summary>
-        public IAnnouncementParser Parser { get; set; }
 
         /// <summary>
         /// Data writer instance
@@ -35,11 +30,26 @@ namespace Scrapers
         {
             AnnouncementType.Rent, AnnouncementType.Sale, AnnouncementType.Swap, AnnouncementType.Unknown
         };
+
+        /// <summary>
+        /// Parser instance
+        /// </summary>
+        protected IAnnouncementParser Parser;
         
         /// <summary>
         /// URL to start from
         /// </summary>
         protected string HomeUrl;
+
+        /// <summary>
+        /// After how many pages scraper will stop processing data
+        /// </summary>
+        private int _stopAfter;
+
+        /// <summary>
+        /// How many pages were processed already
+        /// </summary>
+        private int _alreadyParsedCount;
 
         /// <summary>
         /// Scraping browser instance
@@ -61,7 +71,10 @@ namespace Scrapers
         /// </summary>
         private readonly ISet<BaseAnnouncementInfo> _offers = new HashSet<BaseAnnouncementInfo>();
         
-
+        /// <summary>
+        /// Perform request to the specified url
+        /// </summary>
+        /// <param name="url">Page URL</param>
         private void Request(string url)
         {
             _alreadyVisited.Add(url);
@@ -69,42 +82,57 @@ namespace Scrapers
             var page = _browser.NavigateToPage(new Uri(url));
             Parse(page.Html);
         }
-
+        
+        /// <summary>
+        /// Parse HTML acquired from requested page
+        /// </summary>
+        /// <param name="html">HTML nodes</param>
         private void Parse(HtmlNode html)
         {
-            var offers = GetOffers(html)
-                .Where(offer => TypesToScrap.Contains(offer.Type));
-            _offers.UnionWith(offers);
-            
-            var nextPage = GetNextPageUrl(html);
-            if (nextPage != null)
+            var offers = GetOffers(html);
+            var validOffers = offers.Where(offer => TypesToScrap.Contains(offer.Type));
+            _offers.UnionWith(validOffers);
+            _alreadyParsedCount++;
+
+            if (_stopAfter != 0 && _alreadyParsedCount >= _stopAfter)
             {
-                if (!_alreadyVisited.Contains(nextPage))
-                {
-                    Request(nextPage);   
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Decision, $"{nextPage} already visited. Saving results...");
-                    Writer.SaveUrls(_offers);
-                }
+                Logger.Log(LogLevel.Decision, $"Scraping limit of {_stopAfter} pages reached. Saving results...");
+                Writer.SaveUrls(_offers);
+                return;
             }
-            else
+
+            var nextPage = GetNextPageUrl(html);
+            if (nextPage == null)
             {
                 Logger.Log(LogLevel.Decision, "Last page reached. Saving results...");
                 Writer.SaveUrls(_offers);
+                return;
             }
+
+            if (_alreadyVisited.Contains(nextPage))
+            {
+                Logger.Log(LogLevel.Decision, $"{nextPage} already visited. Saving results...");
+                Writer.SaveUrls(_offers);
+                return;
+            }
+
+            Request(nextPage);
         }
 
         #region IAnnouncementScraper
         
         /// <inheritdoc cref="IAnnouncementScraper.Start" />
-        public void Start()
+        public void Start(int startPage = 1, int stopAfter = 0)
         {
             if (HomeUrl == "")
                 throw new ArgumentException("HomeUrl must be provided");
 
-            Request(HomeUrl);
+            _alreadyParsedCount = 0;
+            _stopAfter = stopAfter;
+            
+            Logger.Log(LogLevel.Decision, $"Started scraping from page {startPage} with limit of {stopAfter} pages...");
+            
+            Request(GetPageUrl(startPage));
         }
 
         /// <inheritdoc cref="IAnnouncementScraper.ScrapeOffers" />
@@ -126,6 +154,9 @@ namespace Scrapers
                 }
             }
         }
+
+        /// <inheritdoc cref="IAnnouncementScraper.GetPageUrl" />
+        public abstract string GetPageUrl(int page);
 
         /// <inheritdoc cref="IAnnouncementScraper.GetOffers" />
         public abstract ISet<BaseAnnouncementInfo> GetOffers(HtmlNode html);
