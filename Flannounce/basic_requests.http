@@ -7,12 +7,16 @@
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
 
+
+###
+
 POST http://localhost:5000/api/scrap
 Content-Type: application/json
 
-{   
+{
   "startPage": 1,
-  "stopAfter": 5
+  "stopAfter": 9
 }
 
 ###
+

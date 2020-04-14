@@ -29,13 +29,13 @@ namespace Scrapers.Parsing
             // Text
             var details = ParseDetails(detailsNodes);
             var priceText = priceNode.InnerText.RemoveWhitespace().TrimFromEnd(2);
-            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2);
+            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2).Replace(',','.');
 
             var pricePsmText = details.ContainsKey("Cena za m²") 
                 ? details["Cena za m²"].RemoveWhitespace()
                 : "0";
             if (pricePsmText != "0")
-                pricePsmText = pricePsmText.TrimFromEnd(5).Replace(".", ",");
+                pricePsmText = pricePsmText.TrimFromEnd(5);
 
             var rentText = details.ContainsKey("Czynsz (dodatkowo)") 
                 ? details["Czynsz (dodatkowo)"].RemoveWhitespace()
@@ -48,13 +48,13 @@ namespace Scrapers.Parsing
             var title = titleNode.InnerText.Trim();
             var (voivodeship, city, district) = ParseLocation(locationNode.InnerText.Trim());
 
-            var basePrice = float.Parse(priceText);
-            var rent = float.Parse(rentText);
-            var pricePsm = float.Parse(pricePsmText);
+            var basePrice = priceText.ToFloatWithPolishCulture();
+            var rent = rentText.ToFloatWithPolishCulture();
+            var pricePsm = pricePsmText.ToFloatWithPolishCulture();
 
             var isFromDeveloper = details["Oferta od"].Contains("Deweloper");
             var includesFurniture = details["Umeblowane"] == "Tak";
-            var livingSpace = float.Parse(livingSpaceText);
+            var livingSpace = livingSpaceText.ToFloatWithPolishCulture();
             var buildingType = details["Rodzaj zabudowy"];
             var rooms = details["Liczba pokoi"];
             var floor = details.ContainsKey("Poziom") ? details["Poziom"] : null;

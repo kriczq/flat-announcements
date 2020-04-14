@@ -43,13 +43,13 @@ namespace Scrapers.Parsing
             var id = idNode.InnerText.Split(": ")[1].Split("Nr")[0];
             var title = titleNode.InnerText.Trim();
 
-            var basePrice = float.Parse(priceText);
-            var rent = float.Parse(rentText);
-            var pricePsm = float.Parse(pricePsmText);
+            var basePrice = priceText.ToFloatWithPolishCulture();
+            var rent = rentText.ToFloatWithPolishCulture();
+            var pricePsm = pricePsmText.ToFloatWithPolishCulture();
 
             var isFromDeveloper = details.ContainsKey("Rynek") &&  details["Rynek"] != "Wtórny";
             var includesFurniture = details.ContainsKey("Stan wykończenia") && details["Stan wykończenia"] == "do zamieszkania";
-            var livingSpace = float.Parse(livingSpaceText);
+            var livingSpace = livingSpaceText.ToFloatWithPolishCulture();
             var buildingType = details.ContainsKey("Rodzaj zabudowy") ? details["Rodzaj zabudowy"] : "";
             var rooms = details.ContainsKey("Liczba pokoi") ? details["Liczba pokoi"] : "0";
             var floor = details.ContainsKey("Piętro") ? details["Piętro"] : "Nieznane";
