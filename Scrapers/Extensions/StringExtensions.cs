@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 
 namespace Scrapers.Extensions
 {
     public static class StringExtensions
     {
+        private static CultureInfo _polishCultureInfo = new CultureInfo("pl");
+        
         /// <summary>
         /// Remove all whitespace characters from string
         /// </summary>
@@ -22,6 +25,14 @@ namespace Scrapers.Extensions
             return str.Length <= length 
                 ? string.Empty 
                 : str.Substring(0, str.Length - length);
+        }
+
+        /// <summary>
+        /// Convert to float with Polish culture
+        /// </summary>
+        public static float ToFloatWithPolishCulture(this string rawNumber)
+        {
+            return float.Parse(rawNumber, _polishCultureInfo );
         }
     }
 }
