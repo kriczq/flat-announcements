@@ -5,7 +5,10 @@ namespace Scrapers.Extensions
 {
     public static class StringExtensions
     {
-        private static CultureInfo _polishCultureInfo = new CultureInfo("pl");
+        /// <summary>
+        /// Polish CultureInfo instance
+        /// </summary>
+        private static readonly CultureInfo PolishCultureInfo = new CultureInfo("pl");
         
         /// <summary>
         /// Remove all whitespace characters from string
@@ -28,11 +31,11 @@ namespace Scrapers.Extensions
         }
 
         /// <summary>
-        /// Convert to float with Polish culture
+        /// Convert to float with polish culture
         /// </summary>
         public static float ToFloatWithPolishCulture(this string rawNumber)
         {
-            return float.Parse(rawNumber, _polishCultureInfo );
+            return float.Parse(rawNumber, PolishCultureInfo);
         }
     }
 }

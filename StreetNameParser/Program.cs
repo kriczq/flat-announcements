@@ -1,12 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace StreetNameParser
+﻿namespace StreetNameParser
 {
-    class Program
+    internal static class Program
     {
-
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var filePath = args[0];
             var outPath = args[1];

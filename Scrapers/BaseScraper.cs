@@ -96,7 +96,7 @@ namespace Scrapers
 
             if (_stopAfter != 0 && _alreadyParsedCount >= _stopAfter)
             {
-                Logger.Log(LogLevel.Decision, $"Scraping limit of {_stopAfter} pages reached. Saving results...");
+                Logger.Decision($"Scraping limit of {_stopAfter} pages reached. Saving results...");
                 Writer.SaveUrls(_offers);
                 return;
             }
@@ -104,14 +104,14 @@ namespace Scrapers
             var nextPage = GetNextPageUrl(html);
             if (nextPage == null)
             {
-                Logger.Log(LogLevel.Decision, "Last page reached. Saving results...");
+                Logger.Decision("Last page reached. Saving results...");
                 Writer.SaveUrls(_offers);
                 return;
             }
 
             if (_alreadyVisited.Contains(nextPage))
             {
-                Logger.Log(LogLevel.Decision, $"{nextPage} already visited. Saving results...");
+                Logger.Decision($"{nextPage} already visited. Saving results...");
                 Writer.SaveUrls(_offers);
                 return;
             }
@@ -130,7 +130,7 @@ namespace Scrapers
             _alreadyParsedCount = 0;
             _stopAfter = stopAfter;
             
-            Logger.Log(LogLevel.Decision, $"Started scraping from page {startPage} with limit of {stopAfter} pages...");
+            Logger.Decision($"Started scraping from page {startPage} with limit of {stopAfter} pages...");
             
             Request(GetPageUrl(startPage));
         }
@@ -150,7 +150,7 @@ namespace Scrapers
                 }
                 catch (Exception e) when (e is AggregateException || e is InvalidOperationException || e is FormatException)
                 {
-                    Logger.Log(LogLevel.Error, $"Url {offer.Url} not scrappable. Skipping. ({e.Message})");
+                    Logger.Error($"Url {offer.Url} not scrappable. Skipping. ({e.Message})");
                 }
             }
         }

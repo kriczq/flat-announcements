@@ -7,7 +7,7 @@ namespace Scrapers.Logging
     /// Logging class that outputs logged information to a file.
     /// Filename changes daily for easier grouping of log messages.
     /// </summary>
-    public class FileLogger : ILogger
+    public class FileLogger : BaseLogger
     {
         /// <summary>
         /// Absolute path where data will be written
@@ -22,8 +22,8 @@ namespace Scrapers.Logging
                 Directory.CreateDirectory(_dataPath);
         }
         
-        /// <inheritdoc cref="ILogger.Log" />
-        public void Log(LogLevel level, string message)
+        /// <inheritdoc cref="BaseLogger.Log" />
+        public override void Log(LogLevel level, string message)
         {
             var now = DateTime.Now;
             var file = $"{_dataPath}/{now:yyyy-MM-dd}.log";

@@ -6,6 +6,9 @@ using Scrapers.Model;
 
 namespace Scrapers.Writing
 {
+    /// <summary>
+    /// Writer that outputs information to the JSON file.
+    /// </summary>
     public class FileWriter : IDataWriter
     { 
         /// <summary>

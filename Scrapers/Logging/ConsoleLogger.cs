@@ -6,10 +6,10 @@ namespace Scrapers.Logging
     /// Logging class that outputs logged information to a standard output.
     /// Message color indicates different log levels.
     /// </summary>
-    public class ConsoleLogger : ILogger
+    public class ConsoleLogger : BaseLogger
     {
-        /// <inheritdoc cref="ILogger.Log" />
-        public void Log(LogLevel level, string message)
+        /// <inheritdoc cref="BaseLogger.Log" />
+        public override void Log(LogLevel level, string message)
         {
             Console.ForegroundColor = level switch
             {

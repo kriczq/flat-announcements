@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
-using Scrapers.Logging;
 using Scrapers.Model;
 using Scrapers.Parsing;
 using ScrapySharp.Extensions;
@@ -49,7 +48,7 @@ namespace Scrapers
                 });
             }
             
-            Logger.Log(LogLevel.Info, $"Found {offers.Count} announcements on page.");
+            Logger.Info($"Found {offers.Count} announcements on page.");
 
             return offers;
         }
@@ -63,16 +62,16 @@ namespace Scrapers
 
                 if (!nextLink.Attributes.Contains("href"))
                 {
-                    Logger.Log(LogLevel.Decision, "Next link not found. Scrapping complete...");
+                    Logger.Decision("Next link not found. Scrapping complete...");
                     return null;
                 }
 
-                Logger.Log(LogLevel.Decision, $"Found next link: {nextLink.Attributes["href"].Value}. Processing...");
+                Logger.Decision($"Found next link: {nextLink.Attributes["href"].Value}. Processing...");
                 return nextLink.Attributes.AttributesWithName("href").First().Value;
             }
             catch (InvalidOperationException)
             {
-                Logger.Log(LogLevel.Error, "Next link not found");
+                Logger.Error("Next link not found");
                 return null;
             }
         }
@@ -97,6 +96,7 @@ namespace Scrapers
             if (breadcrumb.Contains("Sprzedaż"))
                 return AnnouncementType.Sale;
 
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (breadcrumb.Contains("Zamiana"))
                 return AnnouncementType.Swap;
 

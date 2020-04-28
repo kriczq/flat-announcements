@@ -27,6 +27,6 @@ namespace Scrapers.Model
         
         public DateTime CreatedAt { get; set; }
         
-        public DateTime ScrapedAt { get; set; } = DateTime.Now;
+        public DateTime ScrapedAt { get; } = DateTime.Now;
     }
 }
