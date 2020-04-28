@@ -1,21 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Security;
-using System.Text;
 
 namespace StreetNameParser
 {
     public class StreetNameParser
     {
+        /// <summary>
+        /// Input file path
+        /// </summary>
         private readonly string _filePath;
         
+        /// <summary>
+        /// Output file path
+        /// </summary>
         private readonly string _outputPath;
         
+        /// <summary>
+        /// City
+        /// </summary>
         private readonly string _city;
+
+        /// <summary>
+        /// Dictionary of streets not to remove
+        /// </summary>
+        private readonly Dictionary<string, string> _streetsNotToRemove = new Dictionary<string, string>
+        {
+            { "aleja Jana Pawła II", "Jana Pawła" },
+            { "Księżnej Anny", "Księżnej Anny" }
+        };
         
-        private static List<string> _wordsToRemove = new List<string>
+        /// <summary>
+        /// Words to remove from street name
+        /// </summary>
+        private static readonly List<string> WordsToRemove = new List<string>
         {
             "ul. ",
             "aleja ",
@@ -205,59 +223,60 @@ namespace StreetNameParser
             "Zygmunta ",
             "Zdzisława "
         };
-        
-        private Dictionary<string,string> _streetsNotToRemove = new Dictionary<string,string>(new[]
-        {
-            new KeyValuePair<string,string>("aleja Jana Pawła II","Jana Pawła"),
-            new KeyValuePair<string,string>("Księżnej Anny","Księżnej Anny")
-        });
-        
+
         public StreetNameParser(string filePath, string outputPath, string city)
         {
             _filePath = filePath;
             _outputPath = outputPath;
             _city = city;
-            _wordsToRemove.Add($" {city}");
+            
+            WordsToRemove.Add($" {city}");
         }
-
+        
+        /// <summary>
+        /// Parse input file and create new file which has information about city and street
+        /// </summary>
         public void Parse()
         {
-            using (StreamWriter writer = new StreamWriter(_outputPath)) 
+            using (var writer = new StreamWriter(_outputPath)) 
             {
-                    writer.WriteLine("[");
+                writer.WriteLine("[");
 
-                    foreach (var line in File.ReadLines(_filePath))
-                    {
-                        var cleanedStreetName = CleanStreetName(line);
-                        
-                        Console.WriteLine(cleanedStreetName);
+                foreach (var line in File.ReadLines(_filePath))
+                {
+                    var cleanedStreetName = CleanStreetName(line);
+                    
+                    Console.WriteLine(cleanedStreetName);
 
-                        var lineToOutput = $"{{ \"City\":\"{_city}\", \"Name\":\"{cleanedStreetName}\" }},";
-                        writer.WriteLine(lineToOutput);
-                    }
-                    writer.WriteLine("]");
+                    var lineToOutput = $"{{ \"City\":\"{_city}\", \"Name\":\"{cleanedStreetName}\" }},";
+                    writer.WriteLine(lineToOutput);
+                }
+                writer.WriteLine("]");
             }
         }
 
+        /// <summary>
+        /// Get cleaned street name
+        /// </summary>
         private string CleanStreetName(string line)
         {
-            string cleanedStreetName;
-
-            cleanedStreetName = _streetsNotToRemove.ContainsKey(line) ? _streetsNotToRemove[line] : RemoveRedundantChars(line);
-
-            return cleanedStreetName;
+            return _streetsNotToRemove.ContainsKey(line)
+                ? _streetsNotToRemove[line]
+                : RemoveRedundantChars(line);
         }
 
+        /// <summary>
+        /// Remove redundant characters from line containing street information
+        /// </summary>
         private static string RemoveRedundantChars(string line)
         {
-            foreach (var prefix in _wordsToRemove)
+            foreach (var prefix in WordsToRemove)
             {
                 if (!line.Contains(prefix)) continue;
                 var index = line.IndexOf(prefix, StringComparison.Ordinal);
-                var lineAfterRemove = (index < 0)
+                var lineAfterRemove = index < 0
                     ? line
                     : line.Remove(index, prefix.Length);
-
 
                 return lineAfterRemove == string.Empty ? line : RemoveRedundantChars(lineAfterRemove);
             }
