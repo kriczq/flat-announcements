@@ -140,6 +140,7 @@ namespace Scrapers.Parsing
             if (details.ContainsKey("Czynsz"))
                 return details["Czynsz"].RemoveWhitespace().TrimFromEnd(2);
 
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (details.ContainsKey("Czynsz - dodatkowo"))
                 return details["Czynsz - dodatkowo"].RemoveWhitespace().TrimFromEnd(2);
 
@@ -155,6 +156,7 @@ namespace Scrapers.Parsing
             if (node == null)
                 return "0";
 
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (node.InnerText.Contains("miesiąc"))
                 return node.InnerText.RemoveWhitespace().TrimFromEnd(10);
 

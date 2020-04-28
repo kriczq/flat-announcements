@@ -11,7 +11,7 @@ namespace Scrapers.Writing
         /// <summary>
         /// List of base announcement infos
         /// </summary>
-        public List<BaseAnnouncementInfo> BaseAnnouncementInfos { get; } = new List<BaseAnnouncementInfo>();
+        private List<BaseAnnouncementInfo> BaseInfos { get; } = new List<BaseAnnouncementInfo>();
 
         /// <summary>
         /// List of announcements
@@ -19,21 +19,12 @@ namespace Scrapers.Writing
         public List<Announcement> Announcements { get; } = new List<Announcement>();
         
         /// <inheritdoc cref="IDataWriter.SaveUrls" />
-        public void SaveUrls(IEnumerable<BaseAnnouncementInfo> enumerable)
-        {
-            BaseAnnouncementInfos.AddRange(enumerable);
-        }
+        public void SaveUrls(IEnumerable<BaseAnnouncementInfo> enumerable) => BaseInfos.AddRange(enumerable);
 
         /// <inheritdoc cref="IDataWriter.SaveOne" />
-        public void SaveOne(Announcement announcement)
-        {
-            Announcements.Add(announcement);
-        }
+        public void SaveOne(Announcement announcement) => Announcements.Add(announcement);
 
         /// <inheritdoc cref="IDataWriter.SaveMany" />
-        public void SaveMany(IEnumerable<Announcement> enumerable)
-        {
-            Announcements.AddRange(enumerable);
-        }
+        public void SaveMany(IEnumerable<Announcement> enumerable) => Announcements.AddRange(enumerable);
     }
 }

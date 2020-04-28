@@ -6,6 +6,11 @@ using Scrapers.Model;
 
 namespace Scrapers.Parsing
 {
+    /// <summary>
+    /// Parser that should be used to compose multiple parsers into one.
+    /// E. g. OLX includes offers from Otodom, so CompositeParser can be created to match
+    /// urls from olx to the OlxParser and urls from otodom to OtodomParser
+    /// </summary>
     public class CompositeParser : IAnnouncementParser
     {
         /// <summary>
