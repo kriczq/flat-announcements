@@ -19,34 +19,32 @@ namespace Scrapers.Parsing
         public Announcement ParseOffer(string uri, HtmlNode html)
         {
             // Nodes
-            var titleboxDetailsNode = html.CssSelect(".offer-titlebox__details > em").First();
-            var idNode = titleboxDetailsNode.CssSelect("small").First();
-            var titleNode = html.CssSelect(".offer-titlebox > h1").First();
-            var locationNode = html.CssSelect(".offer-titlebox__details > .show-map-link > strong").First();
-            var priceNode = html.CssSelect(".price-label > strong").First();
-            var detailsNodes = html.CssSelect(".descriptioncontent > table.details .item");
+            var titleboxNode = html.CssSelect(".offer-titlebox").First();
+            var titleNode = titleboxNode.CssSelect("h1").First();
+            var bottomBarItemNodes = html.CssSelect(".offer-bottombar .offer-bottombar__item").ToList();
+            var idNode = bottomBarItemNodes[2].CssSelect("strong").First();
+            var priceNode = titleboxNode.CssSelect(".pricelabel__value").First();
+            var createdAtNode = bottomBarItemNodes[0];
+            var locationNode = html.CssSelect(".offer-user__address address").First();
+            var detailsNodes = html.CssSelect(".offer-details .offer-details__item");
 
             // Text
             var details = ParseDetails(detailsNodes);
             var priceText = priceNode.InnerText.RemoveWhitespace().TrimFromEnd(2);
-            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2).Replace(',','.');
-
+            var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2);
+            var locationText = locationNode.InnerText.Trim();
+            
             var pricePsmText = details.ContainsKey("Cena za m²") 
-                ? details["Cena za m²"].RemoveWhitespace()
+                ? details["Cena za m²"].RemoveWhitespace().TrimFromEnd(5)
                 : "0";
-            if (pricePsmText != "0")
-                pricePsmText = pricePsmText.TrimFromEnd(5);
-
             var rentText = details.ContainsKey("Czynsz (dodatkowo)") 
-                ? details["Czynsz (dodatkowo)"].RemoveWhitespace()
+                ? details["Czynsz (dodatkowo)"].RemoveWhitespace().TrimFromEnd(2)
                 : "0";
-            if (rentText != "0")
-                rentText = rentText.TrimFromEnd(2);
 
             // Values
-            var id = idNode.InnerText.Trim().Split(":").Last();
+            var id = idNode.InnerText.Trim();
             var title = titleNode.InnerText.Trim();
-            var (voivodeship, city, district) = ParseLocation(locationNode.InnerText.Trim());
+            var (voivodeship, city, district) = ParseLocation(locationText);
 
             var basePrice = priceText.ToFloatWithPolishCulture();
             var rent = rentText.ToFloatWithPolishCulture();
@@ -55,11 +53,11 @@ namespace Scrapers.Parsing
             var isFromDeveloper = details["Oferta od"].Contains("Deweloper");
             var includesFurniture = details["Umeblowane"] == "Tak";
             var livingSpace = livingSpaceText.ToFloatWithPolishCulture();
-            var buildingType = details["Rodzaj zabudowy"];
-            var rooms = details["Liczba pokoi"];
+            var buildingType = details.ContainsKey("Rodzaj zabudowy") ? details["Rodzaj zabudowy"] : null;
+            var rooms = details.ContainsKey("Liczba pokoi") ? details["Liczba pokoi"] : null;
             var floor = details.ContainsKey("Poziom") ? details["Poziom"] : null;
 
-            var createdAt = ParseCreatedAt(titleboxDetailsNode.InnerText);
+            var createdAt = ParseCreatedAt(createdAtNode.InnerText);
             
             return new Announcement
             {
@@ -69,6 +67,7 @@ namespace Scrapers.Parsing
                 Voivodeship = voivodeship,
                 City = city,
                 District = district,
+                // Street = ,
                 
                 BasePrice = basePrice,
                 Rent = rent,
@@ -96,9 +95,9 @@ namespace Scrapers.Parsing
 
             foreach (var node in detailsNodes)
             {
-                var header = node.CssSelect("th").First().InnerText.Trim();
-                var value = node.CssSelect(".value").First().InnerText.Trim();
-                details.Add(header, value);
+                var param = node.CssSelect(".offer-details__name").First().InnerText.Trim();
+                var value = node.CssSelect(".offer-details__value").First().InnerText.Trim();
+                details.Add(param, value);
             }
 
             return details;
@@ -115,6 +114,7 @@ namespace Scrapers.Parsing
         private static Tuple<string, string, string> ParseLocation(string locationString)
         {
             var parts = locationString.Split(", ");
+
             return parts.Length switch
             {
                 3 => new Tuple<string, string, string>(parts[1], parts[0], parts[2]),
@@ -130,7 +130,7 @@ namespace Scrapers.Parsing
         /// <returns>Announcement creation date</returns>
         private static DateTime ParseCreatedAt(string titleboxString)
         {
-            const string pattern = @"(Dodane o (.+), ID)|(Dodane z telefonu o (.+),)";
+            const string pattern = @"(Dodane o (.+))|(Dodane z telefonu o (.+))";
             var match = Regex.Match(titleboxString.CleanInnerText(), pattern, RegexOptions.Multiline);
             var date = match.Groups[2].Value == "" ? match.Groups[4].Value : match.Groups[2].Value;
             return Convert.ToDateTime(date, new CultureInfo("pl"));
