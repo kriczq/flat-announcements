@@ -35,7 +35,7 @@ namespace Scrapers.Extensions
         /// </summary>
         public static float ToFloatWithPolishCulture(this string rawNumber)
         {
-            return float.Parse(rawNumber, PolishCultureInfo);
+            return float.Parse(rawNumber.Replace('.', ','), PolishCultureInfo);
         }
     }
 }
