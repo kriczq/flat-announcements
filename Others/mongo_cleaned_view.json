@@ -1,0 +1,101 @@
+[{$project: {
+  AnnounceId: {
+    $trim: {
+      input: '$AnnounceId'
+    }
+  },
+  City: 1,
+  AnnounceType: 1,
+  Title: 1,
+  Url: 1,
+  Street: 1,
+  District: 1,
+  Rooms: 1,
+  Floor: {
+    $toLower: '$Floor'
+  },
+  BuildingType: 1,
+  IsFromDeveloper: 1,
+  OfferedBy: 1,
+  Price: 1,
+  LivingSpace: 1,
+  CreatedAt: 1,
+  ScrapedAt: 1,
+  PricePerSquareMeter: 1,
+  CalculatedPrice: {
+    $subtract: [
+      {
+        $divide: [
+          '$Price',
+          '$LivingSpace'
+        ]
+      },
+      '$PricePerSquareMeter'
+    ]
+  },
+  IsCalculatedPricePerSquareMeterDifferentFromRaw: {
+    $lt: [
+      {
+        $abs: {
+          $subtract: [
+            {
+              $divide: [
+                '$Price',
+                '$LivingSpace'
+              ]
+            },
+            '$PricePerSquareMeter'
+          ]
+        }
+      },
+      1
+    ]
+  },
+  IsLivingSpaceLessThan1000: {
+    $lt: [
+      '$LivingSpace',
+      1000
+    ]
+  },
+  IsLivingSpaceGreaterThan10: {
+    $gt: [
+      '$LivingSpace',
+      10
+    ]
+  },
+  IsPricePerSquareMeterGreaterThan1500: {
+    $gt: [
+      '$PricePerSquareMeter',
+      1500
+    ]
+  },
+  IsCityStartingWithUpper: {
+    $eq: [
+      {
+        $substrCP: [
+          '$City',
+          0,
+          1
+        ]
+      },
+      {
+        $toUpper: {
+          $substrCP: [
+            '$City',
+            0,
+            1
+          ]
+        }
+      }
+    ]
+  }
+}}, {$match: {
+  IsCalculatedPricePerSquareMeterDifferentFromRaw: true,
+  IsLivingSpaceGreaterThan10: true,
+  IsPricePerSquareMeterGreaterThan1500: true,
+  IsLivingSpaceLessThan1000: true,
+  IsCityStartingWithUpper: true,
+  City: {
+    $ne: ''
+  }
+}}]
