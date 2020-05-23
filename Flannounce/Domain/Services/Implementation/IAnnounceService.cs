@@ -5,7 +5,7 @@ namespace Flannounce.Domain.Services.Implementation
 {
     public interface IAnnounceService
     {
-        List<Announce> Get();
+        List<Announce> Get(PaginationFilter filter);
 
         Announce Get(string id);
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Flannounce.Domain;
 using Flannounce.Domain.Parser;
 using Flannounce.Domain.Services;
 using Flannounce.Domain.Services.Implementation;
@@ -28,7 +29,7 @@ namespace Flannounce.Controllers
         public ActionResult<List<Announce>> Scrap(ScrapParametersDto scrapParametersDto)
         {
             var scrapedAnnounces = _scrapService.Scrap(scrapParametersDto); 
-            var dbAnnounces = _announceService.Get();
+            var dbAnnounces = _announceService.Get((PaginationFilter)null);
             var newAnnounces =  _streetParser.ParseStreet(_scrapService.GetOnlyNewAnnounces(dbAnnounces, scrapedAnnounces)).ToList();
             
             foreach (var newAnnounce in newAnnounces)

@@ -3,9 +3,16 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.1" />
     </ItemGroup>
 
     <ItemGroup>

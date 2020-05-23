@@ -18,8 +18,20 @@ namespace Flannounce.Domain.Services
             _announces = client.Announces;
         }
 
-        public List<Announce> Get() =>
-            _announces.Find(_ => true).ToList();
+        public List<Announce> Get(PaginationFilter paginationFilter)
+        {
+            if (paginationFilter is null)
+            {
+               return _announces.Find(_ => true).ToList();
+            }
+
+            var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+            
+            return _announces.Find(_ => true)
+                .Skip(skip)
+                .Limit(paginationFilter.PageSize)
+                .ToList();
+        }
 
         public Announce Get(string id) =>
             _announces.Find<Announce>(a => a.Id == id).FirstOrDefault();
