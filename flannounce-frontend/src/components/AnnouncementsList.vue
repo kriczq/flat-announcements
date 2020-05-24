@@ -2,7 +2,7 @@
   <p v-if="status === 'LOADING'">loading...</p>
   <p v-else-if="status === 'ERROR'" style="color: tomato">loading error</p>
   <p v-else-if="announcements.length === 0">
-    there is no flats actually, check again later
+    there is no announcements actually, check again later
   </p>
   <div v-else>
     <Announcement v-for="a in announcements" :key="a.title" :announcement="a" />

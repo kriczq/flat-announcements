@@ -30,6 +30,7 @@ export default defineComponent({
   color: tomato;
   text-decoration: none;
   margin-left: 1rem;
+  cursor: pointer;
 }
 
 .flat > h3 {

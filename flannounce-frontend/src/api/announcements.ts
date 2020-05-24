@@ -29,7 +29,7 @@ const fetchEndpoint = async ({ path, method, data }: Endpoint) => {
 };
 
 function fetchAnnouncements(): Promise<Announcement[]> {
-  return fetchEndpoint({ path: 'announce' });
+  return fetchEndpoint({ path: 'announce' }).then(response => response.data);
 }
 
 // function addFlat(flat: IFlat): Promise<IFlat> {
