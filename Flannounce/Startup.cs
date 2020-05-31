@@ -17,8 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
+using AutoMapper;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Flannounce
@@ -45,7 +44,8 @@ namespace Flannounce
           services.Configure<FlannounceDatabaseSettings>(
                 Configuration.GetSection(nameof(FlannounceDatabaseSettings)));
           services.AddSwaggerGen();
-
+          services.AddAutoMapper(typeof(Startup));
+          
           services.AddSingleton<IFlannounceDatabaseSettings>(sp =>sp.GetRequiredService<IOptions<FlannounceDatabaseSettings>>().Value);
           services.AddSingleton<IDbClient,DbClient>();
           services.AddSingleton<IAnnounceService,AnnounceService>();
@@ -62,8 +62,10 @@ namespace Flannounce
           });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper mapper)
         {
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

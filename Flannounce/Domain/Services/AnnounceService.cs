@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Flannounce.Configuration;
 using Flannounce.Controllers;
 using Flannounce.Domain.DB;
+using Flannounce.Domain.Filter;
 using Flannounce.Domain.Services.Implementation;
+using Flannounce.Domain.Utils;
 using Flannounce.Model.DAO;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -18,16 +21,19 @@ namespace Flannounce.Domain.Services
             _announces = client.Announces;
         }
 
-        public List<Announce> Get(PaginationFilter paginationFilter)
+        public List<Announce> Get(GetAllAnnouncesFilter filter,PaginationFilter paginationFilter)
         {
             if (paginationFilter is null)
             {
-               return _announces.Find(_ => true).ToList();
+               return _announces
+                   .AddFiltersOnQuery(filter)
+                   .ToList();
             }
 
             var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
             
-            return _announces.Find(_ => true)
+            return _announces
+                .AddFiltersOnQuery(filter)
                 .Skip(skip)
                 .Limit(paginationFilter.PageSize)
                 .ToList();
