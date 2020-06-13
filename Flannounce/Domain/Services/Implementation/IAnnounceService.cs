@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Flannounce.Domain.Filter;
 using Flannounce.Model.DAO;
 
 namespace Flannounce.Domain.Services.Implementation
 {
     public interface IAnnounceService
     {
-        List<Announce> Get(PaginationFilter filter);
+        List<Announce> Get(GetAllAnnouncesFilter filter,PaginationFilter paginationFilter);
 
         Announce Get(string id);
 

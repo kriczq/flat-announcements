@@ -29,7 +29,7 @@ namespace Flannounce.Controllers
         public ActionResult<List<Announce>> Scrap(ScrapParametersDto scrapParametersDto)
         {
             var scrapedAnnounces = _scrapService.Scrap(scrapParametersDto); 
-            var dbAnnounces = _announceService.Get((PaginationFilter)null);
+            var dbAnnounces = _announceService.Get(null,(PaginationFilter)null);
             var newAnnounces =  _streetParser.ParseStreet(_scrapService.GetOnlyNewAnnounces(dbAnnounces, scrapedAnnounces)).ToList();
             
             foreach (var newAnnounce in newAnnounces)

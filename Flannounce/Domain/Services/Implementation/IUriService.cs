@@ -1,4 +1,5 @@
 using System;
+using Flannounce.Domain.Filter;
 
 namespace Flannounce.Domain.Services.Implementation
 {
@@ -6,6 +7,6 @@ namespace Flannounce.Domain.Services.Implementation
     {
         Uri GetAnnounceUri(string announceId);
 
-        Uri GetAllAnnouncesUri(string path = "", PaginationQuery pagination = null);
+        Uri GetAllAnnouncesUri(string path = "", PaginationQuery pagination = null, GetAllAnnouncesFilter announcesFilter = null);
     }
 }
