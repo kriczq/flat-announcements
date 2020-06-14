@@ -36,9 +36,20 @@ namespace Flannounce
         }
 
         public IConfiguration Configuration { get; }
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public void ConfigureServices(IServiceCollection services)
         {
+          services.AddCors(options =>
+          {
+              options.AddPolicy(MyAllowSpecificOrigins,
+              builder =>
+              {
+                  builder.WithOrigins("*")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+              });
+          });
           services.InstallServicesInAssembly(Configuration);
           services.AddControllers();
           services.Configure<FlannounceDatabaseSettings>(
@@ -71,6 +82,8 @@ namespace Flannounce
                 app.UseDeveloperExceptionPage();
             }
             
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseRouting();
             
             var swaggerOptions = new SwaggerOptions();
