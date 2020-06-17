@@ -9,6 +9,8 @@ namespace Flannounce.Configuration
         public static class Announce
         {
             public const string GetAll = Base + "/announce";
+            
+            public const string GetAvgPricePerCity = Base + "/avgPricePerCity";
 
             public const string Get = Base + "/announce/{announceId}";
 

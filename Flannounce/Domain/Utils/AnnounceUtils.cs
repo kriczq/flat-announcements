@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Flannounce.Domain.Filter;
 using Flannounce.Model.DAO;
@@ -93,5 +94,20 @@ namespace Flannounce.Domain.Utils
             
             return queryable.Find(filter);
         }
+        
+        public static IEnumerable<AveragePricePerCity> ConvertToAveragePricePerCities(this List<Announce> announces)
+        {
+            var avgPricesPerCity = announces?.GroupBy(
+                    a => a.City,
+                    a => a.PricePerSquareMeter)
+                .Select(ac => new AveragePricePerCity()
+                {
+                    City = ac.Key,
+                    AveragePrice = ac.Average() ?? 0
+                });
+            
+            return avgPricesPerCity;
+        }
+
     }
 }
