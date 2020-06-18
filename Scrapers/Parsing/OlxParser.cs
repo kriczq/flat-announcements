@@ -27,6 +27,7 @@ namespace Scrapers.Parsing
             var createdAtNode = bottomBarItemNodes[0];
             var locationNode = html.CssSelect(".offer-user__address address").First();
             var detailsNodes = html.CssSelect(".offer-details .offer-details__item");
+            var imagesListNode = html.CssSelect("#descGallery li a").ToList();
 
             // Text
             var details = ParseDetails(detailsNodes);
@@ -45,6 +46,14 @@ namespace Scrapers.Parsing
             var id = idNode.InnerText.Trim();
             var title = titleNode.InnerText.Trim();
             var (voivodeship, city, district) = ParseLocation(locationText);
+            var images = imagesListNode
+                .Select(node =>
+                {
+                    var href = node.GetAttributeValue("href");
+                    var cleanUrlParts = href.Split(";s=");        // Remove image resizing
+                    return cleanUrlParts[0];
+                })
+                .ToList();
 
             var basePrice = priceText.ToFloatWithPolishCulture();
             var rent = rentText.ToFloatWithPolishCulture();
@@ -63,6 +72,7 @@ namespace Scrapers.Parsing
             {
                 Id = id,
                 Title = title,
+                Images = images,
                 
                 Voivodeship = voivodeship,
                 City = city,
