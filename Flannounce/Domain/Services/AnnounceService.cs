@@ -15,24 +15,26 @@ namespace Flannounce.Domain.Services
     public class AnnounceService : IAnnounceService
     {
         private readonly IMongoCollection<Announce> _announces;
+        private readonly IMongoCollection<Announce> _cleanedAnnounces;
 
         public AnnounceService(IDbClient client)
         {
             _announces = client.Announces;
+            _cleanedAnnounces = client.CleanedAnnounces;
         }
 
         public List<Announce> Get(GetAllAnnouncesFilter filter,PaginationFilter paginationFilter)
         {
             if (paginationFilter is null)
             {
-               return _announces
+               return _cleanedAnnounces
                    .AddFiltersOnQuery(filter)
                    .ToList();
             }
 
             var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
             
-            return _announces
+            return _cleanedAnnounces
                 .AddFiltersOnQuery(filter)
                 .Skip(skip)
                 .Limit(paginationFilter.PageSize)
@@ -40,7 +42,7 @@ namespace Flannounce.Domain.Services
         }
 
         public Announce Get(string id) =>
-            _announces.Find<Announce>(a => a.Id == id).FirstOrDefault();
+            _cleanedAnnounces.Find<Announce>(a => a.Id == id).FirstOrDefault();
 
         public Announce Create([FromBody] Announce announce) {
             _announces.InsertOne(announce);
