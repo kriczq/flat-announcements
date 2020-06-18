@@ -36,5 +36,7 @@ namespace Flannounce.Domain.Filter
         public DateTime? CreatedAtMin { get; set; }
          
         public DateTime? CreatedAtMax { get; set; }
+        
+        public bool? WithImages { get; set; }
     }
 }
