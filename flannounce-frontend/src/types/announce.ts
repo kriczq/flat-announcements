@@ -1,13 +1,14 @@
-type AnnounceType = 'Sale'
+export type AnnounceType = 'Sale'
 
-enum BuildingType {
-  Raz,
-  Dwa,
-  Trzy,
-  Cztery
+export enum BuildingType {
+  Blok,
+  Kamienica,
+  Apartamentowiec,
+  Loft,
+  Pozostałe
 }
 
-enum OfferedBy {
+export enum OfferedBy {
   Person,
   Agency
 }

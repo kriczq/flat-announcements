@@ -1,4 +1,5 @@
 import { Announce } from '@/types/announce'
+import { Filters } from '@/types/filters'
 
 interface Endpoint {
   path: string
@@ -27,11 +28,18 @@ const fetchEndpoint = async ({ path, method, data }: Endpoint) => {
   }
 }
 
-const PAGE_SIZE = 100
+const PAGE_SIZE = 50
 
-function fetchAnnounces(pageNumber = 1): Promise<Announce[]> {
+function fetchAnnounces(
+  filters: Partial<Filters> = {},
+  pageNumber = 1
+): Promise<Announce[]> {
+  const filtersParams = (Object.keys(filters) as Array<keyof Filters>)
+    .map(key => key + '=' + filters[key])
+    .join('&')
+
   return fetchEndpoint({
-    path: `announce/?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}`
+    path: `announce/?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&${filtersParams}`
   }).then(response => response.data)
 }
 
