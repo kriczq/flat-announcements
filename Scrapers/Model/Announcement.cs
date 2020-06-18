@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Scrapers.Model
 {
@@ -8,6 +9,7 @@ namespace Scrapers.Model
         public string Id { get; set; }
 
         public string Title { get; set; }
+        public List<string> Images { get; set; }
 
         public string Voivodeship { get; set; }
         public string City { get; set; }
