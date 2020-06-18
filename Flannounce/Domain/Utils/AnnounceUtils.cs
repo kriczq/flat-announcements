@@ -101,7 +101,7 @@ namespace Flannounce.Domain.Utils
             return queryable.Find(filter);
         }
 
-        public static IEnumerable<AveragePricePerCity> ConvertToAveragePricePerCities(this List<Announce> announces)
+        public static IEnumerable<AveragePricePerCity> ConvertToAveragePricePerCities(this List<Announce> announces,bool sortAsc)
         {
             var avgPricesPerCity = announces?.GroupBy(
                     a => a.City,
@@ -110,10 +110,16 @@ namespace Flannounce.Domain.Utils
                 {
                     City = ac.Key,
                     AveragePrice = ac.Average() ?? 0
-                });
-            
+                })
+                .Sort(sortAsc);
+
             return avgPricesPerCity;
         }
 
+        private static IOrderedEnumerable<AveragePricePerCity> Sort(this IEnumerable<AveragePricePerCity> avgPricePerCities,
+            bool sortAsc)
+        {
+            return sortAsc ? avgPricePerCities.OrderBy(x => x.AveragePrice) : avgPricePerCities.OrderByDescending(x => x.AveragePrice);
+        }
     }
 }

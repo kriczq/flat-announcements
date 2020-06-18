@@ -44,7 +44,7 @@ namespace Flannounce.Controllers
         }
         
         [HttpGet(ApiRoutes.Announce.GetAvgPricePerCity)]
-        public ActionResult<List<Announce>>  GetAvgPricePerCity([FromQuery]GetAllAnnouncesQuery query, [FromQuery]int count = 10000)
+        public ActionResult<List<AveragePricePerCity>>  GetAvgPricePerCity([FromQuery]GetAllAnnouncesQuery query, [FromQuery]int count = 10000, [FromQuery]bool sortAsc = false)
         {
             var filter = _mapper.Map<GetAllAnnouncesFilter>(query);
             var paginationFilter = new PaginationFilter()
@@ -54,7 +54,7 @@ namespace Flannounce.Controllers
             };
             var announces = _announceService.Get(filter,paginationFilter);      
 
-            return Ok(announces.ConvertToAveragePricePerCities());
+            return Ok(announces.ConvertToAveragePricePerCities(sortAsc));
         }
 
         [HttpGet(ApiRoutes.Announce.Get)]
