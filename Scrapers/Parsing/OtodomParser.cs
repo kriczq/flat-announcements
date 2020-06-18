@@ -27,6 +27,7 @@ namespace Scrapers.Parsing
             var priceNode = html.CssSelect(".css-1vr19r7").First();
             var pricePsmNode = html.CssSelect(".css-zdpt2t").First();
             var detailsNodes = html.CssSelect(".css-1ci0qpi li");
+            var imagesListNode = html.CssSelect(".css-d8fgxy .slick-track img").ToList();
             
             // Text
             var details = ParseDetails(detailsNodes);
@@ -38,6 +39,14 @@ namespace Scrapers.Parsing
             var livingSpaceText = details["Powierzchnia"].RemoveWhitespace().TrimFromEnd(2);
 
             var (voivodeship, city, district, street) = ParseLocation(breadcrumbsNode);
+            var images = imagesListNode
+                .Select(node =>
+                {
+                    var src = node.GetAttributeValue("src");
+                    var cleanUrlParts = src.Split(";s=");        // Remove image resizing
+                    return cleanUrlParts[0];
+                })
+                .ToList();
 
             // Values
             var id = idNode.InnerText.Split(": ")[1].Split("Nr")[0];
@@ -60,6 +69,7 @@ namespace Scrapers.Parsing
             {
                 Id = id,
                 Title = title,
+                Images = images,
                 
                 Voivodeship = voivodeship,
                 City = city,
