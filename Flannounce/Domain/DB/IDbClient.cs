@@ -7,6 +7,8 @@ namespace Flannounce.Domain.DB
     {
         IMongoCollection<Announce> Announces { get; set; }
         
+        IMongoCollection<Announce> CleanedAnnounces { get; set; }
+
         IMongoCollection<Street> Streets { get; set; }
     }
 }

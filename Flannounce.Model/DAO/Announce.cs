@@ -98,6 +98,8 @@ namespace Flannounce.Model.DAO
 
         public byte[] Image { get; set; }
 
+        public List<string> Images { get; set; }
+
         public virtual bool Equals(object other)
         {
             if ((other == null) || GetType() != other.GetType())

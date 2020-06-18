@@ -14,7 +14,6 @@ namespace Flannounce.Domain
                 return null;
             }
 
-
             return new Announce()
             {
                 AnnounceId = announcement.Id,
@@ -33,6 +32,7 @@ namespace Flannounce.Domain
                 Floor = announcement.Floor,
                 CreatedAt = announcement.CreatedAt,
                 ScrapedAt = announcement.ScrapedAt,
+                Images = announcement.Images
             };
         }
     }

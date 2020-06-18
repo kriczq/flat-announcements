@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
   "startPage": 1,
-  "stopAfter": 9
+  "stopAfter": 1
 }
 
 ###

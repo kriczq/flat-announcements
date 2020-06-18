@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Flannounce.Domain.Filter;
@@ -91,10 +92,15 @@ namespace Flannounce.Domain.Utils
             {
                 filter = filter & filterBuilder.Gte(x => x.CreatedAt, announceFilter.CreatedAtMin);
             } 
+                        
+            if (announceFilter?.WithImages ?? false)
+            {
+                filter = filter & filterBuilder.Exists(x => x.Images);
+            } 
             
             return queryable.Find(filter);
         }
-        
+
         public static IEnumerable<AveragePricePerCity> ConvertToAveragePricePerCities(this List<Announce> announces)
         {
             var avgPricesPerCity = announces?.GroupBy(
