@@ -14,8 +14,6 @@ namespace Flannounce.Domain.Filter
         public string Floor { get; set; }
          
         public BuildingType? BuildingType { get; set; }
-
-        public bool? IsFromDeveloper { get; set; }
         
         public bool? IncludesFurniture { get; set; }
 
