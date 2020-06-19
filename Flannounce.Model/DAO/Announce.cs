@@ -77,6 +77,8 @@ namespace Flannounce.Model.DAO
         [BsonRepresentation(BsonType.Boolean)]
         public bool IsFromDeveloper { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
+        [BsonRepresentation(BsonType.Boolean)]
         public bool IncludesFurniture { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
