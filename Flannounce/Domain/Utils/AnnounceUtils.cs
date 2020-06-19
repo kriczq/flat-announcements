@@ -32,16 +32,11 @@ namespace Flannounce.Domain.Utils
             if (announceFilter?.BuildingType != null)
             {
                 filter = filter & filterBuilder.Eq(x => x.BuildingType, announceFilter.BuildingType);
-            }         
-                                
-            if (announceFilter?.IsFromDeveloper != null)
-            {
-                filter = filter & filterBuilder.Eq(x => x.IsFromDeveloper, announceFilter.IsFromDeveloper);
-            }         
-                                
+            }
+
             if (announceFilter?.IncludesFurniture != null)
             {
-                filter = filter & filterBuilder.Eq(x => x.IncludesFurniture, announceFilter.IncludesFurniture);
+                filter = filter & filterBuilder.Eq(x => x.IncludesFurniture, (bool) announceFilter.IncludesFurniture);
             }   
             
             if (announceFilter?.OfferedBy != null)

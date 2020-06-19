@@ -73,11 +73,9 @@ namespace Flannounce.Model.DAO
         [BsonRepresentation(BsonType.String)]
         public BuildingType? BuildingType { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         [BsonRepresentation(BsonType.Boolean)]
         public bool IsFromDeveloper { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         [BsonRepresentation(BsonType.Boolean)]
         public bool IncludesFurniture { get; set; }
 
