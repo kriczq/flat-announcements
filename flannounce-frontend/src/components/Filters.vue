@@ -132,7 +132,6 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { filtersModule } from '@/store/filters'
 import { FilterName, Filters as TFilters } from '@/types/filters'
-import { announceModule } from '@/store/announce'
 
 @Component
 export default class Filters extends Vue {
@@ -148,10 +147,12 @@ export default class Filters extends Vue {
 
   private clearAllFilters() {
     filtersModule.clearAllFilters()
-    announceModule.refreshAnnounces()
+    this.refresh()
   }
 
-  private refresh = announceModule.refreshAnnounces
+  private refresh() {
+    this.$emit('refresh')
+  }
 
   private offeredByOptions = [
     {

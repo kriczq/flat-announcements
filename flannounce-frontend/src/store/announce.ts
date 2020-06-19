@@ -40,7 +40,7 @@ export default class AnnounceModule extends VuexModule {
     this.resetPage()
     this.clearAnnounces()
 
-    this.fetchAnnounces()
+    return this.fetchAnnounces()
   }
 
   @Mutation

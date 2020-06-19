@@ -7,12 +7,20 @@
       color="deep-purple accent-4"
     ></v-progress-linear>
     <div class="container pa-10">
-      <filters class="all-row" />
+      <filters class="all-row" @refresh="refreshAnnounces" />
       <template v-if="announces.length > 0">
         <Announce :announce="a" v-for="a in announces" :key="a.id" />
       </template>
-      <div class="all-row" style="text-align: center;" v-else>
-        <v-icon x-large color="deep-purple accent-4">mdi-home-city-outline</v-icon
+      <div v-else-if="loading" class="all-row" style="text-align: center;">
+        <v-icon x-large color="deep-purple accent-4"
+          >mdi-home-city-outline</v-icon
+        ><span class="ml-5 deep-purple--text text--accent-4"
+          >Trwa ładowanie.</span
+        >
+      </div>
+      <div v-else class="all-row" style="text-align: center;">
+        <v-icon x-large color="deep-purple accent-4"
+          >mdi-home-city-outline</v-icon
         ><span class="ml-5 deep-purple--text text--accent-4"
           >Brak ogłoszeń spełniających podane kryteria.</span
         >
@@ -22,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { announceModule } from '@/store/announce'
 import Announce from '@/components/Announce.vue'
 import Filters from '@/components/Filters.vue'
@@ -35,20 +43,28 @@ import { ScrollMixin } from '@/mixins/scroll'
   }
 })
 export default class AnnouncesList extends Mixins(ScrollMixin) {
-  private loading = true
+  private loading = false
 
   private get announces() {
     return announceModule.announces
   }
 
   private created() {
+    if (this.announces.length > 0) return
+
     this.fetchAnnounces()
   }
 
   fetchAnnounces() {
     this.loading = true
     announceModule.fetchAnnounces().then(() => {
-      console.log('end loaidng')
+      this.loading = false
+    })
+  }
+
+  refreshAnnounces() {
+        this.loading = true
+    announceModule.refreshAnnounces().then(() => {
       this.loading = false
     })
   }
@@ -72,8 +88,9 @@ export default class AnnouncesList extends Mixins(ScrollMixin) {
 }
 
 .loading-bar {
-  position: sticky;
-  top: 64px;
+  background-color: white;
+  position: fixed;
+  top: 60px;
   z-index: 10;
 }
 </style>

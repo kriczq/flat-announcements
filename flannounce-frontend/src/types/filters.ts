@@ -1,4 +1,4 @@
-import { BuildingType, OfferedBy } from './announce';
+import { BuildingType, OfferedBy } from './announce'
 
 export interface Filters {
   city: string
