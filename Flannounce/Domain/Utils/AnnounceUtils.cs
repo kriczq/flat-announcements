@@ -16,83 +16,104 @@ namespace Flannounce.Domain.Utils
 
             if (!string.IsNullOrEmpty(announceFilter?.City))
             {
-                filter = filter & filterBuilder.Eq(x => x.City, announceFilter.City);
+                filter &= filterBuilder.Eq(x => x.City, announceFilter.City);
             }
 
             if (!string.IsNullOrEmpty(announceFilter?.District))
             {
-                filter = filter & filterBuilder.Eq(x => x.District, announceFilter.District);
+                filter &= filterBuilder.Eq(x => x.District, announceFilter.District);
             }
             
             if (!string.IsNullOrEmpty(announceFilter?.Floor))
             {
-                filter = filter & filterBuilder.Eq(x => x.Floor, announceFilter.Floor);
+                filter &= filterBuilder.Eq(x => x.Floor, announceFilter.Floor);
             }
 
             if (announceFilter?.BuildingType != null)
             {
-                filter = filter & filterBuilder.Eq(x => x.BuildingType, announceFilter.BuildingType);
+                filter &= filterBuilder.Eq(x => x.BuildingType, announceFilter.BuildingType);
             }
 
             if (announceFilter?.IncludesFurniture != null)
             {
-                filter = filter & filterBuilder.Eq(x => x.IncludesFurniture, (bool) announceFilter.IncludesFurniture);
+                filter &= filterBuilder.Eq(x => x.IncludesFurniture, (bool) announceFilter.IncludesFurniture);
             }   
             
             if (announceFilter?.OfferedBy != null)
             {
-                filter = filter & filterBuilder.Eq(x => x.OfferedBy, announceFilter.OfferedBy);
+                filter &= filterBuilder.Eq(x => x.OfferedBy, announceFilter.OfferedBy);
             }
 
             if (!string.IsNullOrEmpty(announceFilter?.Rooms))
             {
-                filter = filter & filterBuilder.Eq(x => x.Rooms, announceFilter.Rooms);
+                filter &= filterBuilder.Eq(x => x.Rooms, announceFilter.Rooms);
             }
             if (announceFilter?.PriceMax != null)
             {
-                filter = filter & filterBuilder.Lte(x => x.Price, announceFilter.PriceMax);
+                filter &= filterBuilder.Lte(x => x.Price, announceFilter.PriceMax);
             }     
             
             if (announceFilter?.PriceMin != null)
             {
-                filter = filter & filterBuilder.Gte(x => x.Price, announceFilter.PriceMin);
+                filter &= filterBuilder.Gte(x => x.Price, announceFilter.PriceMin);
             }          
             
             if (announceFilter?.PricePerSquareMeterMax != null)
             {
-                filter = filter & filterBuilder.Lte(x => x.PricePerSquareMeter, announceFilter.PricePerSquareMeterMax);
+                filter &= filterBuilder.Lte(x => x.PricePerSquareMeter, announceFilter.PricePerSquareMeterMax);
             }     
             
             if (announceFilter?.PricePerSquareMeterMin != null)
             {
-                filter = filter & filterBuilder.Gte(x => x.PricePerSquareMeter, announceFilter.PricePerSquareMeterMin);
+                filter &= filterBuilder.Gte(x => x.PricePerSquareMeter, announceFilter.PricePerSquareMeterMin);
             } 
             
             if (announceFilter?.LivingSpaceMax != null)
             {
-                filter = filter & filterBuilder.Lte(x => x.LivingSpace, announceFilter.LivingSpaceMax);
+                filter &= filterBuilder.Lte(x => x.LivingSpace, announceFilter.LivingSpaceMax);
             }     
             
             if (announceFilter?.LivingSpaceMin != null)
             {
-                filter = filter & filterBuilder.Gte(x => x.LivingSpace, announceFilter.LivingSpaceMin);
+                filter &= filterBuilder.Gte(x => x.LivingSpace, announceFilter.LivingSpaceMin);
             } 
             
             if (announceFilter?.CreatedAtMax != null)
             {
-                filter = filter & filterBuilder.Lte(x => x.CreatedAt, announceFilter.CreatedAtMax);
+                filter &= filterBuilder.Lte(x => x.CreatedAt, announceFilter.CreatedAtMax);
             }     
             
             if (announceFilter?.CreatedAtMin != null)
             {
-                filter = filter & filterBuilder.Gte(x => x.CreatedAt, announceFilter.CreatedAtMin);
+                filter &= filterBuilder.Gte(x => x.CreatedAt, announceFilter.CreatedAtMin);
             } 
                         
-            if (announceFilter?.WithImages ?? false)
+            if (announceFilter?.WithImages != null)
             {
-                filter = filter & filterBuilder.Exists(x => x.Images);
+                if ((bool)announceFilter.WithImages)
+                {
+                    filter &= filterBuilder.Exists(x => x.Images);
+                }
+                else
+                {
+                    filter &= filterBuilder.Eq(x => x.Images,null);
+                }
             } 
             
+            if (announceFilter?.HasCoordinates != null)
+            {
+                if ((bool) announceFilter?.HasCoordinates)
+                {
+                    filter &= filterBuilder.Exists(x => x.Latitude);
+                    filter &= filterBuilder.Exists(x => x.Longitude);   
+                }
+                else
+                {
+                    filter &= filterBuilder.Eq(x => x.Latitude,null);
+                    filter &= filterBuilder.Eq(x => x.Longitude,null);   
+                }
+            }
+
             return queryable.Find(filter);
         }
 
