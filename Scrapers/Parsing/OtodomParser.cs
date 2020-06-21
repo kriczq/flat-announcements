@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using Scrapers.Extensions;
 using Scrapers.Model;
 using ScrapySharp.Extensions;
@@ -64,6 +65,7 @@ namespace Scrapers.Parsing
             var floor = details.ContainsKey("Piętro") ? details["Piętro"] : "Nieznane";
 
             var createdAt = ParseCreatedAt(html.InnerText);
+            var (latitude, longitude) = ParseGeoCoordinates(html);
             
             return new Announcement
             {
@@ -75,6 +77,8 @@ namespace Scrapers.Parsing
                 City = city,
                 District = district,
                 Street = street,
+                Latitude = latitude,
+                Longitude = longitude,
                 
                 BasePrice = basePrice,
                 Rent = rent,
@@ -182,6 +186,35 @@ namespace Scrapers.Parsing
             return node == null || node.InnerText == ""
                 ? "0" 
                 : node.InnerText.RemoveWhitespace().TrimFromEnd(5);
+        }
+        
+        /// <summary>
+        /// Parse Json app state and extract latitude and longitude
+        /// </summary>
+        /// <param name="html">Page html node</param>
+        /// <returns>Latitude and longitude</returns>
+        private static Tuple<string, string> ParseGeoCoordinates(HtmlNode html)
+        {
+            try
+            {
+                var serverState = html.CssSelect("#server-app-state").First();
+                var json = JObject.Parse(serverState.InnerText);
+
+                var coordinates = json["initialProps"]["data"]["advert"]["location"]["coordinates"];
+
+                var latitude = coordinates["latitude"].ToString().Replace(',', '.');
+                var longitude = coordinates["longitude"].ToString().Replace(',', '.');
+                
+                return new Tuple<string, string>(latitude, longitude);
+            }
+            catch (InvalidOperationException)
+            {
+                return new Tuple<string, string>(null, null);
+            }
+            catch (NullReferenceException)
+            {
+                return new Tuple<string, string>(null, null); 
+            }
         }
     }
 }
