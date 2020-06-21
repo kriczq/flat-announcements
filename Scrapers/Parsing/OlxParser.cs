@@ -28,6 +28,7 @@ namespace Scrapers.Parsing
             var locationNode = html.CssSelect(".offer-user__address address").First();
             var detailsNodes = html.CssSelect(".offer-details .offer-details__item");
             var imagesListNode = html.CssSelect("#descGallery li a").ToList();
+            var mapContainer = html.CssSelect("#mapcontainer").First();
 
             // Text
             var details = ParseDetails(detailsNodes);
@@ -67,6 +68,7 @@ namespace Scrapers.Parsing
             var floor = details.ContainsKey("Poziom") ? details["Poziom"] : null;
 
             var createdAt = ParseCreatedAt(createdAtNode.InnerText);
+            var (latitude, longitude) = ParseGeoCoordinates(mapContainer);
             
             return new Announcement
             {
@@ -78,6 +80,8 @@ namespace Scrapers.Parsing
                 City = city,
                 District = district,
                 // Street = ,
+                Latitude = latitude,
+                Longitude = longitude,
                 
                 BasePrice = basePrice,
                 Rent = rent,
@@ -144,6 +148,22 @@ namespace Scrapers.Parsing
             var match = Regex.Match(titleboxString.CleanInnerText(), pattern, RegexOptions.Multiline);
             var date = match.Groups[2].Value == "" ? match.Groups[4].Value : match.Groups[2].Value;
             return Convert.ToDateTime(date, new CultureInfo("pl"));
+        }
+
+        /// <summary>
+        /// Parse Json app state and extract latitude and longitude
+        /// </summary>
+        /// <param name="mapContainer">Map container node</param>
+        /// <returns>Latitude and longitude</returns>
+        private static Tuple<string, string> ParseGeoCoordinates(HtmlNode mapContainer)
+        {
+            var latitude = mapContainer.GetAttributeValue("data-lat");
+            var longitude = mapContainer.GetAttributeValue("data-lon");
+            
+            return new Tuple<string, string>(
+                latitude == string.Empty ? null : latitude, 
+                longitude == string.Empty ? null : longitude
+            );
         }
     }
 }
