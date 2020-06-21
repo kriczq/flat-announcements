@@ -32,7 +32,9 @@ namespace Flannounce.Domain
                 Floor = announcement.Floor,
                 CreatedAt = announcement.CreatedAt,
                 ScrapedAt = announcement.ScrapedAt,
-                Images = announcement.Images
+                Images = announcement.Images,
+                Latitude = announcement.Latitude,
+                Longitude = announcement.Longitude
             };
         }
     }

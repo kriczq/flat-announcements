@@ -16,6 +16,10 @@ namespace Flannounce.Domain.Filter
         public BuildingType? BuildingType { get; set; }
         
         public bool? IncludesFurniture { get; set; }
+        
+        public bool? HasCoordinates { get; set; }
+
+        public bool? WithImages { get; set; }
 
         public OfferedBy? OfferedBy { get; set; }
         
@@ -34,7 +38,5 @@ namespace Flannounce.Domain.Filter
         public DateTime? CreatedAtMin { get; set; }
          
         public DateTime? CreatedAtMax { get; set; }
-
-        public bool? WithImages { get; set; }
     }
 }

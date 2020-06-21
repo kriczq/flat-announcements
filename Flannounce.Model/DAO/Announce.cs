@@ -68,7 +68,15 @@ namespace Flannounce.Model.DAO
         public string Rooms { get; set; }
 
         public string Floor { get; set; }
+        
+        public string Latitude { get; set; }
+        
+        public string Longitude { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
+        [BsonRepresentation(BsonType.String)]
+        public OfferedBy? OfferedBy { get; set; }
+        
         [JsonConverter(typeof(StringEnumConverter))]
         [BsonRepresentation(BsonType.String)]
         public BuildingType? BuildingType { get; set; }
@@ -78,10 +86,6 @@ namespace Flannounce.Model.DAO
 
         [BsonRepresentation(BsonType.Boolean)]
         public bool IncludesFurniture { get; set; }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        [BsonRepresentation(BsonType.String)]
-        public OfferedBy? OfferedBy { get; set; }
 
         [BsonRepresentation(BsonType.Decimal128)]
         public decimal? Price { get; set; }
