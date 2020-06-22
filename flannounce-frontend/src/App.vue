@@ -4,16 +4,17 @@
       <div class="d-flex align-center">
         <router-link
           class="text-h4 mr-10 white--text"
-          style="opacity: 0.7; text-decoration: none;"
+          style="text-decoration: none;"
           :to="{ name: 'home' }"
         >
-          Flannounce
+          <v-icon class="mr-4" style="font-size: 36px;">mdi-home-city-outline</v-icon>Flannounce
         </router-link>
-        <v-btn :to="{ name: 'home' }" class="nav-btn mr-3" text exact
-          >Oferty mieszkań</v-btn
+        <v-btn :to="{ name: 'home' }" class="nav-btn mr-2" text exact
+          ><v-icon class="mr-2">mdi-newspaper-variant-multiple</v-icon>Oferty mieszkań</v-btn
         >
+        <v-btn :to="{ name: 'map' }" class="nav-btn mr-2" text exact><v-icon class="mr-2">mdi-google-maps</v-icon>Mapa</v-btn>
         <v-btn :to="{ name: 'stats' }" class="nav-btn" text exact
-          >Statystyki</v-btn
+          ><v-icon class="mr-2">mdi-chart-bar</v-icon>Statystyki</v-btn
         >
       </div>
       <!-- <div class="d-flex align-center">
@@ -48,28 +49,46 @@
       </v-btn> -->
     </v-app-bar>
 
-    <v-content>
+    <v-main>
       <router-view :key="$route.path" class="content-wrap" />
-    </v-content>
+    </v-main>
+    <v-progress-linear
+      v-if="loading"
+      class="loading-bar"
+      indeterminate
+      color="deep-purple accent-4"
+    />
   </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { appModule } from '@/store/app'
 
 @Component({
   name: 'App'
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  private get loading() {
+    return appModule.loading
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+.loading-bar {
+  background-color: rgba(255, 255, 255, 0.5);
+  position: fixed;
+  top: 60px;
+  z-index: 10;
+}
+
 .nav-btn.v-btn--active::before {
   opacity: 0;
 }
 
 ::v-deep .nav-btn > .v-btn__content {
-  padding: 4px;
+  padding: 4px 0;
 }
 
 ::v-deep .nav-btn.v-btn--active > .v-btn__content {

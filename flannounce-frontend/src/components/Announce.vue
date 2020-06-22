@@ -23,7 +23,7 @@
         :href="announce.url"
         target="_blank"
       >
-        Zobacz w olx
+        <v-icon class="mr-2" style="font-size: 16px;">mdi-open-in-new</v-icon>Zobacz w olx
       </v-btn>
       <v-spacer />
       <div class="grey--text text-overline">

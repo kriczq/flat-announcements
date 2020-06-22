@@ -1,30 +1,20 @@
 <template>
-  <div>
-    <v-progress-linear
-      v-if="loading"
-      class="loading-bar"
-      indeterminate
-      color="deep-purple accent-4"
-    ></v-progress-linear>
-    <div class="container pa-10">
-      <filters class="all-row" @refresh="refreshAnnounces" />
-      <template v-if="announces.length > 0">
-        <Announce :announce="a" v-for="a in announces" :key="a.id" />
-      </template>
-      <div v-else-if="loading" class="all-row" style="text-align: center;">
-        <v-icon x-large color="deep-purple accent-4"
-          >mdi-home-city-outline</v-icon
-        ><span class="ml-5 deep-purple--text text--accent-4"
-          >Trwa ładowanie.</span
-        >
-      </div>
-      <div v-else class="all-row" style="text-align: center;">
-        <v-icon x-large color="deep-purple accent-4"
-          >mdi-home-city-outline</v-icon
-        ><span class="ml-5 deep-purple--text text--accent-4"
-          >Brak ogłoszeń spełniających podane kryteria.</span
-        >
-      </div>
+  <div class="container pa-10">
+    <filters class="all-row" @refresh="refreshAnnounces" />
+    <template v-if="announces.length > 0">
+      <Announce :announce="a" v-for="a in announces" :key="a.id" />
+    </template>
+    <div v-else-if="loading" class="all-row" style="text-align: center;">
+      <v-icon x-large color="deep-purple accent-4">mdi-home-city-outline</v-icon
+      ><span class="ml-5 deep-purple--text text--accent-4"
+        >Trwa ładowanie.</span
+      >
+    </div>
+    <div v-else class="all-row" style="text-align: center;">
+      <v-icon x-large color="deep-purple accent-4">mdi-home-city-outline</v-icon
+      ><span class="ml-5 deep-purple--text text--accent-4"
+        >Brak ogłoszeń spełniających podane kryteria.</span
+      >
     </div>
   </div>
 </template>
@@ -32,6 +22,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { announceModule } from '@/store/announce'
+import { appModule } from '@/store/app'
 import Announce from '@/components/Announce.vue'
 import Filters from '@/components/Filters.vue'
 import { ScrollMixin } from '@/mixins/scroll'
@@ -43,8 +34,6 @@ import { ScrollMixin } from '@/mixins/scroll'
   }
 })
 export default class AnnouncesList extends Mixins(ScrollMixin) {
-  private loading = false
-
   private get announces() {
     return announceModule.announces
   }
@@ -56,21 +45,21 @@ export default class AnnouncesList extends Mixins(ScrollMixin) {
   }
 
   fetchAnnounces() {
-    this.loading = true
+    appModule.startLoading()
     announceModule.fetchAnnounces().then(() => {
-      this.loading = false
+      appModule.stopLoading()
     })
   }
 
   refreshAnnounces() {
-        this.loading = true
+    appModule.startLoading()
     announceModule.refreshAnnounces().then(() => {
-      this.loading = false
+      appModule.startLoading()
     })
   }
 
   scrolled() {
-    if (!this.loading) this.fetchAnnounces()
+    if (!appModule.loading) this.fetchAnnounces()
   }
 }
 </script>
@@ -85,12 +74,5 @@ export default class AnnouncesList extends Mixins(ScrollMixin) {
 
 .all-row {
   grid-column: 1 / -1;
-}
-
-.loading-bar {
-  background-color: white;
-  position: fixed;
-  top: 60px;
-  z-index: 10;
 }
 </style>
