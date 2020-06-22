@@ -6,8 +6,9 @@ export interface Filters {
   rooms: string
   floor: string
   buildingType: BuildingType
-  isFromDeveloper: boolean
   includesFurniture: boolean
+  hasCoordinates: boolean
+  withImages: boolean
   offeredBy: OfferedBy
   priceMin: number
   priceMax: number

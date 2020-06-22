@@ -1,11 +1,12 @@
 <template>
-  <v-expansion-panels>
+  <v-expansion-panels hover v-model="open">
     <v-expansion-panel>
       <v-expansion-panel-header class="font-weight-bold"
-        >Filtruj wyniki</v-expansion-panel-header
+        ><span><v-icon class="mr-2" style="font-size: 20px; color: black;">mdi-filter-outline</v-icon
+        >Filtruj wyniki</span></v-expansion-panel-header
       >
       <v-expansion-panel-content>
-        <div class="filter-items">
+        <div class="filter-items mt-2">
           <div class="filter-item">
             <div class="text-subtitle-2">Miasto</div>
             <v-text-field
@@ -129,12 +130,17 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import { filtersModule } from '@/store/filters'
 import { FilterName, Filters as TFilters } from '@/types/filters'
 
 @Component
 export default class Filters extends Vue {
+  @Prop({ type: Boolean, default: false })
+  private readonly autoCollapse!: boolean
+
+  private open = false
+
   private get filters() {
     return filtersModule.filters
   }
@@ -151,6 +157,7 @@ export default class Filters extends Vue {
   }
 
   private refresh() {
+    if (this.autoCollapse) this.open = false
     this.$emit('refresh')
   }
 
