@@ -34,15 +34,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch, Ref } from 'vue-property-decorator'
+import { Vue, Component, Ref } from 'vue-property-decorator'
 import Filters from '@/components/Filters.vue'
 import announceApi from '@/api/announce'
 import { filtersModule } from '../store/filters'
 import { appModule } from '@/store/app'
 import { Announce as TAnnounce, AnnounceLocation } from '../types/announce'
 import Announce from '@/components/Announce.vue'
-import { gmapApi } from 'vue2-google-maps'
-import {} from 'googlemaps'
 
 @Component({
   components: {
