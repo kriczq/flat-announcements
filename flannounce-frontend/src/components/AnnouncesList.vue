@@ -7,7 +7,7 @@
     <div v-else-if="loading" class="all-row" style="text-align: center;">
       <v-icon x-large color="deep-purple accent-4">mdi-home-city-outline</v-icon
       ><span class="ml-5 deep-purple--text text--accent-4"
-        >Trwa ładowanie.</span
+        >Trwa ładowanie ogłoszeń.</span
       >
     </div>
     <div v-else class="all-row" style="text-align: center;">
@@ -36,6 +36,10 @@ import { ScrollMixin } from '@/mixins/scroll'
 export default class AnnouncesList extends Mixins(ScrollMixin) {
   private get announces() {
     return announceModule.announces
+  }
+
+  private get loading() {
+    return appModule.loading
   }
 
   private created() {

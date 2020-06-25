@@ -35,7 +35,6 @@ export default class FiltersModule extends VuexModule {
   @Mutation
   clearAllFilters() {
     this.filters = {}
-    // Object.keys(this.filters).forEach(key => Vue.delete(this.filters, key))
   }
 }
 

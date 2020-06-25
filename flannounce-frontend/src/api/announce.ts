@@ -5,11 +5,15 @@ import { mapLocation } from '@/helpers/map.helpers'
 
 const PAGE_SIZE = 50
 
+const baseFilters = {
+  WithImages: true
+}
+
 function fetchAnnounces(
   filters: Partial<Filters> = {},
   pageNumber = 1
 ): Promise<Announce[]> {
-  const filtersParams = objectToParams(filters)
+  const filtersParams = objectToParams({ ...baseFilters, ...filters })
 
   return fetchEndpoint({
     path: `announce/?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&${filtersParams}`

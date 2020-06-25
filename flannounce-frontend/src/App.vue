@@ -3,11 +3,11 @@
     <v-app-bar app color="indigo accent-3" dark>
       <div class="d-flex align-center">
         <router-link
-          class="text-h4 mr-10 white--text"
+          class="text-h4 mr-5 white--text"
           style="text-decoration: none;"
           :to="{ name: 'home' }"
         >
-          <v-icon class="mr-4" style="font-size: 36px;">mdi-home-city-outline</v-icon>Flannounce
+          <v-icon class="mr-4" style="font-size: 36px;">mdi-home-city-outline</v-icon><span class="logo-title">Flannounce</span>
         </router-link>
         <v-btn :to="{ name: 'home' }" class="nav-btn mr-2" text exact
           ><v-icon class="mr-2">mdi-newspaper-variant-multiple</v-icon>Oferty mieszkań</v-btn
@@ -93,5 +93,11 @@ export default class App extends Vue {
 
 ::v-deep .nav-btn.v-btn--active > .v-btn__content {
   border-bottom: 2px solid white;
+}
+
+@media (max-width: 800px) {
+  .logo-title {
+    display: none;
+  }
 }
 </style>

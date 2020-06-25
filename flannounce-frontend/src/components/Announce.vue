@@ -1,7 +1,14 @@
 <template>
-  <v-card>
+  <v-card class="d-flex flex-column">
+    <v-img
+      style="flex-grow: 0;"
+      class="white--text align-end"
+      height="200px"
+      :src="announce.images[0]"
+    >
+    </v-img>
     <v-card-title>{{ announce.title }}</v-card-title>
-    <v-card-text>
+    <v-card-text style="flex-grow: 1;">
       <div class="mb-2 subtitle-1">
         <span class="font-weight-bold">{{ announce.price }} zł</span> •
         {{ announce.pricePerSquareMeter }} zł/m² • {{ announce.livingSpace }} m²
@@ -12,10 +19,8 @@
       <div class="mb-4 subtitle-1">
         {{ announce.rooms }} • piętro {{ announce.floor }}
       </div>
-      <div v-if="announce.description" class="text--primary">
-        {{ announce.description }}
-      </div>
     </v-card-text>
+    <v-divider class="mx-4"></v-divider>
     <v-card-actions>
       <v-btn
         text
@@ -23,7 +28,8 @@
         :href="announce.url"
         target="_blank"
       >
-        <v-icon class="mr-2" style="font-size: 16px;">mdi-open-in-new</v-icon>Zobacz w olx
+        <v-icon class="mr-2" style="font-size: 16px;">mdi-open-in-new</v-icon
+        >Zobacz w olx
       </v-btn>
       <v-spacer />
       <div class="grey--text text-overline">
@@ -52,3 +58,10 @@ export default class Announce extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+::v-deep .v-card__title {
+  // text-shadow: 2px 2px 5px rgba(5, 5, 5, 1);
+  word-break: initial;
+}
+</style>
