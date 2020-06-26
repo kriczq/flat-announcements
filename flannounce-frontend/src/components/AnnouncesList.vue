@@ -1,6 +1,6 @@
 <template>
   <div class="container pa-10">
-    <filters class="all-row" @refresh="refreshAnnounces" />
+    <filters class="all-row" start-open @refresh="refreshAnnounces" />
     <template v-if="announces.length > 0">
       <Announce :announce="a" v-for="a in announces" :key="a.id" />
     </template>
@@ -63,6 +63,7 @@ export default class AnnouncesList extends Mixins(ScrollMixin) {
   }
 
   scrolled() {
+    console.log('scrolle', appModule.loading)
     if (!appModule.loading) this.fetchAnnounces()
   }
 }
@@ -71,7 +72,7 @@ export default class AnnouncesList extends Mixins(ScrollMixin) {
 <style lang="scss" scoped>
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
   row-gap: 3rem;
   column-gap: 3rem;
 }

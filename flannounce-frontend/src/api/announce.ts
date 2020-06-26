@@ -11,12 +11,13 @@ const baseFilters = {
 
 function fetchAnnounces(
   filters: Partial<Filters> = {},
-  pageNumber = 1
+  pageNumber = 1,
+  pageSize = PAGE_SIZE
 ): Promise<Announce[]> {
   const filtersParams = objectToParams({ ...baseFilters, ...filters })
 
   return fetchEndpoint({
-    path: `announce/?pageNumber=${pageNumber}&pageSize=${PAGE_SIZE}&${filtersParams}`
+    path: `announce/?pageNumber=${pageNumber}&pageSize=${pageSize}&${filtersParams}`
   })
     .then(response => response.data as AnnounceResponse[])
     .then(announces =>

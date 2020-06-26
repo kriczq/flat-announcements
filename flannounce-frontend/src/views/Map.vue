@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%; position: relative;">
     <filters
-      style="position: absolute; top: 1rem; left: 0; right: 0; margin: 0 auto; width: 75%;"
+      style="position: absolute; top: 0.5rem; left: 0; right: 0; margin: 0 auto; width: 75%; max-width: 70rem"
       auto-collapse
       @refresh="fetchData"
     />
@@ -19,6 +19,8 @@
         @closeclick="infoWinOpen = false"
         ><Announce
           v-if="infoWinOpen && currentAnnounce"
+          style="width: 330px;"
+          small
           :announce="currentAnnounce"
         />
       </GmapInfoWindow>
@@ -66,7 +68,7 @@ export default class Map extends Vue {
       ...filtersModule.filters,
       hasCoordinates: true
     }
-    this.announces = await announceApi.fetchAnnounces(filters)
+    this.announces = await announceApi.fetchAnnounces(filters, 1, 200)
 
     const google = await this.mapRef.$gmapApiPromiseLazy()
     const bounds = new google.maps.LatLngBounds()
@@ -106,12 +108,6 @@ export default class Map extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-// .chart-wraper {
-//   height: 10rem;
-// }
-</style>
-
 <style lang="scss">
 button.gm-ui-hover-effect {
   top: 2px !important;
@@ -123,5 +119,13 @@ button.gm-ui-hover-effect > img {
   width: 24px !important;
   height: 24px !important;
   margin: 3px !important;
+}
+
+.gm-style-iw-d {
+  overflow: hidden !important;
+}
+
+.gm-style-iw.gm-style-iw-c {
+  padding: 0;
 }
 </style>

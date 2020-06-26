@@ -7,12 +7,17 @@
           style="text-decoration: none;"
           :to="{ name: 'home' }"
         >
-          <v-icon class="mr-4" style="font-size: 36px;">mdi-home-city-outline</v-icon><span class="logo-title">Flannounce</span>
+          <v-icon class="mr-4" style="font-size: 36px;"
+            >mdi-home-city-outline</v-icon
+          ><span class="logo-title">Flannounce</span>
         </router-link>
         <v-btn :to="{ name: 'home' }" class="nav-btn mr-2" text exact
-          ><v-icon class="mr-2">mdi-newspaper-variant-multiple</v-icon>Oferty mieszkań</v-btn
+          ><v-icon class="mr-2">mdi-newspaper-variant-multiple</v-icon>Oferty
+          mieszkań</v-btn
         >
-        <v-btn :to="{ name: 'map' }" class="nav-btn mr-2" text exact><v-icon class="mr-2">mdi-google-maps</v-icon>Mapa</v-btn>
+        <v-btn :to="{ name: 'map' }" class="nav-btn mr-2" text exact
+          ><v-icon class="mr-2">mdi-google-maps</v-icon>Mapa</v-btn
+        >
         <v-btn :to="{ name: 'stats' }" class="nav-btn" text exact
           ><v-icon class="mr-2">mdi-chart-bar</v-icon>Statystyki</v-btn
         >
@@ -47,17 +52,19 @@
         <span class="mr-2">Latest Release</span>
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn> -->
+      <v-progress-linear
+        background-color="indigo lighten-5"
+        :background-opacity="1"
+        v-if="loading"
+        class="loading-bar"
+        indeterminate
+        color="deep-purple accent-4"
+      />
     </v-app-bar>
 
     <v-main>
       <router-view :key="$route.path" class="content-wrap" />
     </v-main>
-    <v-progress-linear
-      v-if="loading"
-      class="loading-bar"
-      indeterminate
-      color="deep-purple accent-4"
-    />
   </v-app>
 </template>
 
@@ -77,9 +84,11 @@ export default class App extends Vue {
 
 <style lang="scss" scoped>
 .loading-bar {
-  background-color: rgba(255, 255, 255, 0.5);
-  position: fixed;
-  top: 60px;
+  // background-color: rgba(255, 255, 255, 1);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
 }
 

@@ -1,9 +1,12 @@
 <template>
-  <v-expansion-panels hover v-model="open">
+  <v-expansion-panels hover v-model="openConverted">
     <v-expansion-panel>
       <v-expansion-panel-header class="font-weight-bold"
-        ><span><v-icon class="mr-2" style="font-size: 20px; color: black;">mdi-filter-outline</v-icon
-        >Filtruj wyniki</span></v-expansion-panel-header
+        ><span
+          ><v-icon class="mr-2" style="font-size: 20px; color: black;"
+            >mdi-filter-outline</v-icon
+          >Filtruj wyniki</span
+        ></v-expansion-panel-header
       >
       <v-expansion-panel-content>
         <div class="filter-items mt-2">
@@ -54,6 +57,16 @@
               :value="filters.floor"
               placeholder="Wszystkie"
               @change="setFilter('floor', $event)"
+            ></v-select>
+          </div>
+                    <div class="filter-item">
+            <div class="text-subtitle-2">Liczba pokoi</div>
+            <v-select
+              clearable
+              :items="roomsOptions"
+              :value="filters.rooms"
+              placeholder="Wszystkie"
+              @change="setFilter('rooms', $event)"
             ></v-select>
           </div>
           <div class="filter-item">
@@ -139,7 +152,18 @@ export default class Filters extends Vue {
   @Prop({ type: Boolean, default: false })
   private readonly autoCollapse!: boolean
 
-  private open = false
+  @Prop({ type: Boolean, default: false })
+  private readonly startOpen!: boolean
+
+  private open = this.startOpen
+
+  private get openConverted() {
+    return this.open ? 0 : undefined
+  }
+
+  private set openConverted(val: 0 | undefined) {
+    this.open = val === 0
+  }
 
   private get filters() {
     return filtersModule.filters
@@ -206,6 +230,25 @@ export default class Filters extends Vue {
     }
   ]
 
+  private roomsOptions = [
+    {
+      text: '1 pokój',
+      value: '1 pokój'
+    },
+    {
+      text: '2 pokoje',
+      value: '2 pokoje'
+    },
+    {
+      text: '3 pokoje',
+      value: '3 pokoje'
+    },
+    {
+      text: '4 lub więcej',
+      value: '4 i więcej'
+    }
+  ]
+
   private floorOptions = [
     {
       text: 'Suterena',
@@ -231,10 +274,6 @@ export default class Filters extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.filter-item {
-  //   width: 10rem;
-}
-
 .filter-items {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, auto));
