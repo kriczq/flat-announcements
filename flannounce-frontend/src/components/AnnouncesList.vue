@@ -58,12 +58,11 @@ export default class AnnouncesList extends Mixins(ScrollMixin) {
   refreshAnnounces() {
     appModule.startLoading()
     announceModule.refreshAnnounces().then(() => {
-      appModule.startLoading()
+      appModule.stopLoading()
     })
   }
 
   scrolled() {
-    console.log('scrolle', appModule.loading)
     if (!appModule.loading) this.fetchAnnounces()
   }
 }
